@@ -16,7 +16,7 @@ const shifts = [
     category: "Promotion",
     requirements: ["Ngoại hình khá", "Giao tiếp tốt"],
     deadline: "12:00 hôm nay",
-    image: "/pg.png",
+    image: "/cm.svg",
     description: "Tư vấn và giới thiệu sản phẩm tại booth trưng bày sản phẩm công nghệ"
   },
   {
@@ -32,7 +32,7 @@ const shifts = [
     category: "Sampling",
     requirements: ["Năng động", "Thân thiện"],
     deadline: "08:00 ngày mai",
-    image: "https://via.placeholder.com/400x200/f0b33a/FFFFFF?text=Sampling+Event",
+    image: "cm.svg",
     description: "Phát mẫu thử sản phẩm thực phẩm và thu thập feedback khách hàng"
   },
   {
@@ -48,7 +48,7 @@ const shifts = [
     category: "Entertainment",
     requirements: ["Cao 1m6-1m7", "Sức khỏe tốt"],
     deadline: "16:00 hôm nay",
-    image: "https://via.placeholder.com/400x200/e74c3c/FFFFFF?text=Mascot+Show",
+    image: "cm.svg",
     description: "Hóa thân thành mascot thương hiệu để tương tác và chụp ảnh với khách"
   },
 ];

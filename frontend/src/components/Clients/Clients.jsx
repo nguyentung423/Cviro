@@ -6,37 +6,37 @@ const agencies = [
   {
     id: 1,
     name: "Coming soon",
-    logo: "https://via.placeholder.com/150x80/ab3f20/FFFFFF?text=Creative+Pro",
+    logo: "br.svg",
     category: "Coming soon"
   },
   {
     id: 2,
     name: "Coming soon", 
-    logo: "https://via.placeholder.com/150x80/536b4e/FFFFFF?text=Digital+Hub",
+    logo: "br.svg",
     category: "Coming soon"
   },
   {
     id: 3,
     name: "Coming soon",
-    logo: "https://via.placeholder.com/150x80/f0b33a/FFFFFF?text=Event+Sol",
+    logo: "br.svg",
     category: "Coming soon"
   },
   {
     id: 4,
     name: "Coming soon",
-    logo: "https://via.placeholder.com/150x80/ab3f20/FFFFFF?text=Media+Dyn",
+    logo: "br.svg",
     category: "Coming soon"
   },
   {
     id: 5,
     name: "Coming soon",
-    logo: "https://via.placeholder.com/150x80/536b4e/FFFFFF?text=Brand+Co", 
+    logo: "br.svg", 
     category: "Coming soon"
   },
   {
     id: 6,
     name: "Coming soon",
-    logo: "https://via.placeholder.com/150x80/f0b33a/FFFFFF?text=Visual+Arts",
+    logo: "br.svg",
     category: "Coming soon"
   }
 ];
@@ -45,37 +45,37 @@ const brands = [
   {
     id: 1,
     name: "Coming soon",
-    logo: "https://via.placeholder.com/150x80/ab3f20/FFFFFF?text=TechCorp",
+    logo: "br.svg",
     industry: "Coming soon"
   },
   {
     id: 2,
     name: "Coming soon",
-    logo: "https://via.placeholder.com/150x80/f0b33a/FFFFFF?text=Golden+Fin",
+    logo: "br.svg",
     industry: "Coming soon"
   },
   {
     id: 3,
     name: "Coming soon", 
-    logo: "https://via.placeholder.com/150x80/536b4e/FFFFFF?text=EcoLife",
+    logo: "br.svg",
     industry: "Coming soon"
   },
   {
     id: 4,
     name: "Coming soon",
-    logo: "https://via.placeholder.com/150x80/ab3f20/FFFFFF?text=HealthFirst",
+    logo: "br.svg",
     industry: "Coming soon"
   },
   {
     id: 5,
     name: "Coming soon",
-    logo: "https://via.placeholder.com/150x80/f0b33a/FFFFFF?text=FoodMart",
+    logo: "br.svg",
     industry: "Coming soon"
   },
   {
     id: 6,
     name: "Coming soon",
-    logo: "https://via.placeholder.com/150x80/536b4e/FFFFFF?text=AutoDrive",
+    logo: "br.svg",
     industry: "Coming soon"
   }
 ];
@@ -206,7 +206,7 @@ export default function Clients() {
               Hãy để Cviro đồng hành cùng bạn tạo nên sự kiện thành công
             </p>
             <button className="bg-[#ab3f20] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#536b4e] transition-colors duration-200">
-              Liên hệ ngay
+              Đăng ký ngay
             </button>
           </div>
         </div>

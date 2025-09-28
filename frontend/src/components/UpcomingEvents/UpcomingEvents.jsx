@@ -16,7 +16,7 @@ const events = [
     requirements: ["Kinh nghiệm 2+ năm", "Tiếng Anh giao tiếp"],
     featured: true,
     urgent: false,
-    image: "https://via.placeholder.com/400x250/ab3f20/FFFFFF?text=Tech+Expo+2025",
+    image: "cm.svg",
     description: "Hội chợ công nghệ lớn nhất năm với sự tham gia của 200+ doanh nghiệp hàng đầu."
   },
   {
@@ -33,7 +33,7 @@ const events = [
     requirements: ["Ngoại hình khá", "Năng động"],
     featured: false,
     urgent: true,
-    image: "https://via.placeholder.com/400x250/536b4e/FFFFFF?text=Food+Festival",
+    image: "cm.svg",
     description: "Lễ hội ẩm thực đậm chất Việt với hơn 100 gian hàng đặc sản từ khắp ba miền."
   },
   {
@@ -50,7 +50,7 @@ const events = [
     requirements: ["Cao từ 1m65", "Có kinh nghiệm PG"],
     featured: true,
     urgent: false,
-    image: "https://via.placeholder.com/400x250/f0b33a/FFFFFF?text=Auto+Show",
+    image: "cm.svg",
     description: "Triển lãm ô tô quy mô lớn với sự góp mặt của các thương hiệu nổi tiếng thế giới."
   },
 ];
