@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   ChevronDown, Users, Target, Heart, Lightbulb, Rocket, HandHeart, Sprout,
   Play, Pause, Volume2, VolumeX, Globe, Award, Zap, Star, ArrowRight,
-   Sparkles, Eye, TrendingUp, Shield, Clock
+  Sparkles, Eye, TrendingUp, Shield, Clock, ChevronLeft, ChevronRight
 } from 'lucide-react';
 
 // Enhanced Data Configuration
@@ -18,9 +18,9 @@ const aboutData = {
   },
 
   realTimeStats: [
-    { number: "0", label: "Ca làm đã đăng", icon: Target, trend: "+12%", live: true },
-    { number: "0", label: "Agency tin dùng", icon: Users, trend: "+8%", live: true },
-    { number: "0", label: "Ứng viên tham gia", icon: Heart, trend: "+23%", live: true },
+    { number: "5000", label: "Ca làm đã đăng", icon: Target, trend: "+12%", live: true },
+    { number: "300", label: "Agency tin dùng", icon: Users, trend: "+8%", live: true },
+    { number: "12000", label: "Ứng viên tham gia", icon: Heart, trend: "+23%", live: true },
   ],
 
   achievements: [
@@ -110,7 +110,7 @@ const aboutData = {
         status: "online"
       },
       {
-        name: " Bảo Nhật",
+        name: "Bảo Nhật",
         position: "AI Engineer",
         image: "/nhat.png",
         bio: "Trường Đại học Văn Lang",
@@ -134,6 +134,24 @@ const aboutData = {
         bio: "Đại học Kinh Tế Quốc Dân",
         skills: ["Business Strategy", "Partnership", "Market Analysis"],
         linkedin: "https://www.facebook.com/hai.yen.206178/",
+        status: "online"
+      },
+      {
+        name: "Trần Minh Khoa",
+        position: "Tech Lead",
+        image: "/khoa.png",
+        bio: "Trường Đại học Bách Khoa HN",
+        skills: ["Full-stack Dev", "System Design", "Cloud Architecture"],
+        linkedin: "https://linkedin.com/in/tranminhkhoa",
+        status: "online"
+      },
+      {
+        name: "Lê Thị Mai",
+        position: "HR Specialist",
+        image: "/mai.png",
+        bio: "Đại học Ngoại Thương",
+        skills: ["Talent Acquisition", "Employee Relations", "HR Analytics"],
+        linkedin: "https://linkedin.com/in/lethimai",
         status: "online"
       },
     ],
@@ -230,27 +248,7 @@ const useIntersectionObserver = (options = {}) => {
   return [setRef, isVisible];
 };
 
-const useCursorTracker = () => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isPointer, setIsPointer] = useState(false);
-
-  useEffect(() => {
-    const updatePosition = (e) => setPosition({ x: e.clientX, y: e.clientY });
-    const updateCursor = (e) => setIsPointer(window.getComputedStyle(e.target).cursor === 'pointer');
-
-    window.addEventListener('mousemove', updatePosition);
-    window.addEventListener('mouseover', updateCursor);
-    
-    return () => {
-      window.removeEventListener('mousemove', updatePosition);
-      window.removeEventListener('mouseover', updateCursor);
-    };
-  }, []);
-
-  return { position, isPointer };
-};
-
-// Advanced Components
+// Floating Elements Component
 const FloatingElements = () => (
   <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden">
     {[...Array(20)].map((_, i) => (
@@ -265,7 +263,7 @@ const FloatingElements = () => (
         }}
       />
     ))}
-    <style jsx>{`
+    <style>{`
       @keyframes float {
         0%, 100% { transform: translateY(0px) rotate(0deg); }
         50% { transform: translateY(-20px) rotate(180deg); }
@@ -274,6 +272,7 @@ const FloatingElements = () => (
   </div>
 );
 
+// Video Player Component
 const VideoPlayer = ({ videoUrl, className = "" }) => {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -353,6 +352,7 @@ const VideoPlayer = ({ videoUrl, className = "" }) => {
   );
 };
 
+// Hero Section
 const HeroSection = ({ hero }) => {
   const { scrollY } = useParallax();
   const [ref, isVisible] = useIntersectionObserver();
@@ -370,7 +370,6 @@ const HeroSection = ({ hero }) => {
       <FloatingElements />
       
       <div ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Video/Animation */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-br from-orange-600/10 via-orange-500/5 to-green-600/10"></div>
           <div 
@@ -380,7 +379,6 @@ const HeroSection = ({ hero }) => {
         </div>
 
         <div className="relative z-10 text-center px-4 max-w-6xl mx-auto">
-          {/* Achievement Badge */}
           <div className={`inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full mb-8 transform transition-all duration-1000 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
           }`}>
@@ -390,7 +388,6 @@ const HeroSection = ({ hero }) => {
             </span>
           </div>
 
-          {/* Main Title */}
           <div 
             className={`transform transition-all duration-1000 delay-300 ${
               isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
@@ -403,7 +400,6 @@ const HeroSection = ({ hero }) => {
                 <span className="bg-gradient-to-r from-orange-700 via-orange-600 to-green-700 bg-clip-text text-transparent">
                   {hero.titleHighlight}
                 </span>
-                <div className="absolute -bottom-4 left-0 right-0 h-1 bg-gradient-to-r from-orange-700 via-orange-600 to-green-700 transform scale-x-0 animate-pulse"></div>
               </span>
             </h1>
 
@@ -416,7 +412,6 @@ const HeroSection = ({ hero }) => {
             </p>
           </div>
 
-          {/* CTA Buttons */}
           <div className={`flex flex-col md:flex-row gap-6 justify-center items-center transform transition-all duration-1000 delay-600 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
           }`}>
@@ -425,7 +420,6 @@ const HeroSection = ({ hero }) => {
                 Khám phá ngay
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
             </button>
             
             <button className="px-8 py-6 border-2 border-gray-300 text-gray-700 font-semibold text-lg rounded-2xl hover:border-orange-600 hover:text-orange-700 transition-all duration-300 backdrop-blur-md bg-white/80">
@@ -439,6 +433,7 @@ const HeroSection = ({ hero }) => {
   );
 };
 
+// Real Time Stats Section
 const RealTimeStatsSection = ({ stats }) => {
   const [ref, isVisible] = useIntersectionObserver();
   
@@ -456,7 +451,7 @@ const RealTimeStatsSection = ({ stats }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {stats.map((stat, index) => {
-            const number = parseInt(stat.number.replace(/[^0-9]/g, ''));
+            const number = parseInt(stat.number);
             const count = useCountUp(number, 2500, isVisible);
             const Icon = stat.icon;
             
@@ -469,7 +464,6 @@ const RealTimeStatsSection = ({ stats }) => {
                 style={{ transitionDelay: `${index * 200}ms` }}
               >
                 <div className="bg-white/80 backdrop-blur-lg p-8 rounded-3xl border border-gray-200 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-                  {/* Live Indicator */}
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
@@ -481,20 +475,16 @@ const RealTimeStatsSection = ({ stats }) => {
                     </div>
                   </div>
 
-                  {/* Icon */}
                   <div className="w-16 h-16 bg-gradient-to-br from-orange-600 to-orange-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <Icon className="w-8 h-8 text-white" />
                   </div>
 
-                  {/* Number */}
                   <div className="text-5xl md:text-6xl font-black text-gray-900 mb-4">
-                    {isVisible ? `${count.toLocaleString()}${stat.number.includes('+') ? '+' : ''}` : '0'}
+                    {isVisible ? `${count.toLocaleString()}+` : '0'}
                   </div>
 
-                  {/* Label */}
                   <p className="text-lg font-medium text-gray-600">{stat.label}</p>
 
-                  {/* Progress Bar */}
                   <div className="mt-4 h-2 bg-gray-200 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-gradient-to-r from-orange-600 to-orange-700 rounded-full transition-all duration-2000"
@@ -511,6 +501,7 @@ const RealTimeStatsSection = ({ stats }) => {
   );
 };
 
+// Achievements Section
 const AchievementsSection = ({ achievements }) => {
   const [ref, isVisible] = useIntersectionObserver();
 
@@ -551,6 +542,412 @@ const AchievementsSection = ({ achievements }) => {
   );
 };
 
+// Interactive Video Section
+const InteractiveVideoSection = () => {
+  const [ref, isVisible] = useIntersectionObserver();
+  
+  return (
+    <div ref={ref} className="py-24 bg-gradient-to-r from-gray-900 to-black text-white overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className={`text-center mb-16 transform transition-all duration-1000 ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
+        }`}>
+          <h2 className="text-5xl md:text-6xl font-bold mb-6">
+            Trải nghiệm <span className="bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent">tương lai</span>
+          </h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Khám phá công nghệ AI tiên tiến đang cách mạng hóa ngành sự kiện
+          </p>
+        </div>
+        
+        <div className={`transform transition-all duration-1000 delay-500 ${
+          isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
+        }`}>
+          <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl">
+            <VideoPlayer 
+              videoUrl="/videos/platform-demo.mp4" 
+              className="w-full h-full"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Enhanced Mission Section
+const EnhancedMissionSection = ({ mission }) => {
+  const [ref, isVisible] = useIntersectionObserver();
+
+  return (
+    <div ref={ref} className="py-24">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className={`transform transition-all duration-1000 ${
+            isVisible ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'
+          }`}>
+            <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-600 to-orange-700 text-white font-semibold text-sm rounded-full mb-8">
+              <Globe className="w-4 h-4" />
+              {mission.title}
+            </div>
+            
+            <h3 className="text-5xl md:text-7xl font-black text-gray-900 mb-8 leading-tight">
+              {mission.mainTitle}{' '}
+              <span className="bg-gradient-to-r from-orange-700 via-orange-600 to-green-700 bg-clip-text text-transparent">
+                {mission.mainTitleHighlight}
+              </span>
+            </h3>
+            
+            <p className="text-xl text-gray-600 leading-relaxed mb-8">{mission.description}</p>
+            
+            <div className="grid grid-cols-3 gap-6 mb-8">
+              {mission.metrics.map((metric, index) => (
+                <div key={index} className="text-center">
+                  <div className="text-3xl font-black text-orange-700 mb-2">{metric.value}</div>
+                  <div className="text-sm text-gray-600 font-medium">{metric.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className={`transform transition-all duration-1000 ${
+            isVisible ? 'translate-x-0 opacity-100' : 'translate-x-20 opacity-0'
+          }`}>
+            <div className="relative">
+              <div className="bg-white/60 backdrop-blur-xl p-10 rounded-3xl border border-gray-200 shadow-2xl">
+                <div className="absolute -top-4 -left-4 w-8 h-8 bg-gradient-to-r from-orange-600 to-orange-700 rounded-full flex items-center justify-center">
+                  <span className="text-white text-lg font-bold">"</span>
+                </div>
+                
+                <p className="text-xl text-gray-700 leading-relaxed font-medium mb-10 italic">
+                  {mission.quote}
+                </p>
+                
+                <div className="flex items-center">
+                  <div className="relative">
+                    <div className="w-20 h-20 bg-gradient-to-br from-orange-600 to-orange-700 rounded-2xl flex items-center justify-center overflow-hidden">
+                      <img
+                        src={mission.founder.image}
+                        alt={mission.founder.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.parentElement.innerHTML = '<div class="text-white text-3xl font-bold">T</div>';
+                        }}
+                      />
+                    </div>
+                    <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center shadow-lg">
+                      <Shield className="w-4 h-4 text-white" />
+                    </div>
+                  </div>
+                  
+                  <div className="ml-6">
+                    <h4 className="text-2xl font-bold text-gray-900">{mission.founder.name}</h4>
+                    <p className="text-orange-700 font-semibold text-lg">{mission.founder.position}</p>
+                    <p className="text-gray-500 text-sm">{mission.founder.credentials}</p>
+                    
+                    <div className="flex items-center mt-2 gap-2">
+                      <a href={mission.founder.linkedin} target="_blank" rel="noopener noreferrer" className="text-orange-700 hover:text-orange-800 transition-colors">
+                        <Globe className="w-4 h-4" />
+                      </a>
+                      <span className="text-green-700 text-xs font-medium">Verified Leader</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="absolute -top-6 -right-6 w-12 h-12 bg-gradient-to-r from-orange-600 to-orange-700 rounded-full opacity-20 animate-pulse"></div>
+              <div className="absolute -bottom-4 -left-4 w-8 h-8 bg-gradient-to-r from-green-600 to-green-700 rounded-full opacity-30 animate-bounce"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Advanced Values Section
+const AdvancedValuesSection = ({ values }) => {
+  const [ref, isVisible] = useIntersectionObserver();
+  const [hoveredCard, setHoveredCard] = useState(null);
+
+  return (
+    <div ref={ref} className="py-24 bg-gradient-to-br from-stone-50 to-gray-50">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className={`transform transition-all duration-1000 ${
+            isVisible ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'
+          }`}>
+            <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold text-sm rounded-full mb-8">
+              <Zap className="w-4 h-4" />
+              {values.title}
+            </div>
+            
+            <h3 className="text-5xl md:text-7xl font-black text-gray-900 mb-8 leading-tight">
+              {values.mainTitle}{' '}
+              <span className="bg-gradient-to-r from-green-700 via-green-600 to-orange-700 bg-clip-text text-transparent">
+                {values.mainTitleHighlight}
+              </span>
+            </h3>
+            
+            <p className="text-xl text-gray-600 leading-relaxed">{values.description}</p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-6">
+            {values.items.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={index}
+                  className={`group relative overflow-hidden bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 cursor-pointer ${
+                    isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
+                  }`}
+                  style={{ transitionDelay: `${index * 150}ms` }}
+                  onMouseEnter={() => setHoveredCard(index)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
+                  
+                  <div className="absolute top-4 right-4">
+                    <svg className="w-8 h-8 transform -rotate-90" viewBox="0 0 32 32">
+                      <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2" fill="none" className="text-gray-200" />
+                      <circle 
+                        cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2" fill="none"
+                        className={`text-orange-600 transition-all duration-1000`}
+                        style={{ 
+                          strokeDasharray: '75.4', 
+                          strokeDashoffset: hoveredCard === index ? '0' : '75.4',
+                          transition: 'stroke-dashoffset 1s ease-in-out'
+                        }}
+                      />
+                    </svg>
+                  </div>
+                  
+                  <div className="relative z-10">
+                    <div className={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-500`}>
+                      <Icon className="w-8 h-8 text-white" />
+                    </div>
+                    
+                    <h4 className="font-black text-xl text-gray-900 mb-4">{item.title}</h4>
+                    <p className="text-gray-600 leading-relaxed text-sm mb-4">{item.description}</p>
+                    
+                    <div className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">
+                      <Zap className="w-3 h-3" />
+                      {item.metrics}
+                    </div>
+                  </div>
+                  
+                  <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${item.color} transform origin-left transition-transform duration-500 ${
+                    hoveredCard === index ? 'scale-x-100' : 'scale-x-0'
+                  }`}></div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Premium Team Section with Infinite Carousel
+const PremiumTeamSection = ({ team }) => {
+  const [ref, isVisible] = useIntersectionObserver();
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+
+  // Tạo mảng members lặp lại để tạo hiệu ứng infinite loop
+  const extendedMembers = [...team.members, ...team.members, ...team.members];
+
+  useEffect(() => {
+    if (!isVisible || isPaused) return;
+    
+    const interval = setInterval(() => {
+      setCurrentIndex(prev => prev + 1);
+    }, 3000);
+    
+    return () => clearInterval(interval);
+  }, [isVisible, isPaused]);
+
+  // Reset về vị trí đầu khi đến cuối để tạo loop vô hạn
+  useEffect(() => {
+    if (currentIndex >= team.members.length) {
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentIndex(0);
+        setTimeout(() => {
+          setIsTransitioning(true);
+        }, 50);
+      }, 700);
+    }
+  }, [currentIndex, team.members.length]);
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => prev + 1);
+  };
+
+  const prevSlide = () => {
+    if (currentIndex === 0) {
+      setIsTransitioning(false);
+      setCurrentIndex(team.members.length);
+      setTimeout(() => {
+        setIsTransitioning(true);
+        setCurrentIndex(team.members.length - 1);
+      }, 50);
+    } else {
+      setCurrentIndex((prev) => prev - 1);
+    }
+  };
+
+  return (
+    <div ref={ref} className="py-24 bg-gradient-to-b from-white to-stone-50">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className={`text-center mb-20 transform transition-all duration-1000 ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
+        }`}>
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold text-sm rounded-full mb-8">
+            <Users className="w-4 h-4" />
+            {team.title}
+          </div>
+          
+          <h3 className="text-5xl md:text-7xl font-black text-gray-900 mb-8 leading-tight">
+            {team.mainTitle}{' '}
+            <span className="bg-gradient-to-r from-green-700 via-green-600 to-orange-700 bg-clip-text text-transparent">
+              {team.mainTitleHighlight}
+            </span>
+          </h3>
+          
+          <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+            {team.description}
+          </p>
+        </div>
+
+        <div 
+          className="relative"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <div className="flex justify-center mb-8 gap-2">
+            {team.members.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === (currentIndex % team.members.length)
+                    ? 'w-8 bg-gradient-to-r from-orange-600 to-orange-700' 
+                    : 'w-2 bg-gray-300 hover:bg-gray-400'
+                }`}
+              />
+            ))}
+          </div>
+
+          <div className="relative overflow-hidden">
+            <div 
+              className={`flex ${isTransitioning ? 'transition-transform duration-700 ease-in-out' : ''}`}
+              style={{ 
+                transform: `translateX(-${currentIndex * (100 / 3)}%)`,
+              }}
+            >
+              {extendedMembers.map((member, index) => (
+                <div 
+                  key={`${member.name}-${index}`}
+                  className="flex-shrink-0 px-4"
+                  style={{ width: '33.333%' }}
+                >
+                  <div className="group relative transform transition-all duration-500 hover:scale-105">
+                    <div className="relative overflow-hidden rounded-3xl bg-white shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col h-full">
+                      <div className="relative h-80 overflow-hidden flex-shrink-0">
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.parentElement.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-orange-600 to-green-600 flex items-center justify-center text-white text-6xl font-bold">${member.name.charAt(0)}</div>`;
+                          }}
+                        />
+                        
+                        <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full">
+                          <div className={`w-2 h-2 rounded-full ${member.status === 'online' ? 'bg-green-600 animate-pulse' : 'bg-orange-600'}`}></div>
+                          <span className="text-xs font-medium text-gray-700 capitalize">{member.status}</span>
+                        </div>
+                        
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                          <div className="absolute bottom-4 left-4 right-4">
+                            <div className="flex flex-wrap gap-1 mb-3">
+                              {member.skills.slice(0, 2).map((skill, skillIndex) => (
+                                <span key={skillIndex} className="px-2 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-medium rounded-full">
+                                  {skill}
+                                </span>
+                              ))}
+                            </div>
+                            <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-2 bg-white/20 backdrop-blur-sm text-white font-medium text-sm rounded-full hover:bg-white/30 transition-colors">
+                              <Globe className="w-3 h-3" />
+                              Connect
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="p-6 flex-grow flex flex-col">
+                        <h4 className="text-2xl font-bold text-gray-900 mb-2">{member.name}</h4>
+                        <p className="text-lg font-semibold text-orange-700 mb-3">{member.position}</p>
+                        <p className="text-gray-600 leading-relaxed text-sm flex-grow">{member.bio}</p>
+                        
+                        <button 
+                          onClick={() => setSelectedMember(selectedMember === index ? null : index)}
+                          className="mt-6 flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-600 to-orange-700 text-white font-medium text-sm rounded-xl hover:shadow-lg transition-all duration-300 w-full justify-center"
+                        >
+                          <Eye className="w-4 h-4" />
+                          {selectedMember === index ? 'Ẩn' : 'Xem thêm'}
+                        </button>
+                        
+                        <div className={`mt-4 overflow-hidden transition-all duration-500 ${
+                          selectedMember === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+                        }`}>
+                          <div className="p-4 bg-stone-50 rounded-xl">
+                            <h5 className="font-semibold text-gray-900 mb-2 text-sm">Kỹ năng chính:</h5>
+                            <div className="flex flex-wrap gap-1">
+                              {member.skills.map((skill, skillIndex) => (
+                                <span key={skillIndex} className="px-2 py-1 bg-orange-100 text-orange-800 text-xs font-medium rounded-lg">
+                                  {skill}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-orange-600 to-transparent opacity-20"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={prevSlide}
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-300 hover:scale-110 z-10"
+          >
+            <ChevronLeft className="w-6 h-6 text-gray-700" />
+          </button>
+
+          <button
+            onClick={nextSlide}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-300 hover:scale-110 z-10"
+          >
+            <ChevronRight className="w-6 h-6 text-gray-700" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Testimonials Section
 const TestimonialsSection = ({ testimonials }) => {
   const [ref, isVisible] = useIntersectionObserver();
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
@@ -592,15 +989,7 @@ const TestimonialsSection = ({ testimonials }) => {
                 
                 <div className="flex items-center">
                   <div className="w-16 h-16 bg-gradient-to-br from-orange-600 to-orange-700 rounded-full flex items-center justify-center mr-4 overflow-hidden">
-                    <img 
-                      src={testimonial.avatar} 
-                      alt={testimonial.author}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.parentElement.innerHTML = `<span class="text-white font-bold text-xl">${testimonial.author.charAt(0)}</span>`;
-                      }}
-                    />
+                    <span className="text-white font-bold text-xl">{testimonial.author.charAt(0)}</span>
                   </div>
                   <div>
                     <h4 className="text-xl font-bold text-gray-900">{testimonial.author}</h4>
@@ -612,7 +1001,6 @@ const TestimonialsSection = ({ testimonials }) => {
             </div>
           ))}
 
-          {/* Navigation Dots */}
           <div className="flex justify-center mt-8 gap-3">
             {testimonials.map((_, index) => (
               <button
@@ -632,345 +1020,19 @@ const TestimonialsSection = ({ testimonials }) => {
   );
 };
 
-const EnhancedMissionSection = ({ mission }) => {
-  const [ref, isVisible] = useIntersectionObserver();
-
-  return (
-    <div ref={ref} className="py-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div className={`transform transition-all duration-1000 ${
-            isVisible ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'
-          }`}>
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-600 to-orange-700 text-white font-semibold text-sm rounded-full mb-8">
-              <Globe className="w-4 h-4" />
-              {mission.title}
-            </div>
-            
-            <h3 className="text-5xl md:text-7xl font-black text-gray-900 mb-8 leading-tight">
-              {mission.mainTitle}{' '}
-              <span className="bg-gradient-to-r from-orange-700 via-orange-600 to-green-700 bg-clip-text text-transparent">
-                {mission.mainTitleHighlight}
-              </span>
-            </h3>
-            
-            <p className="text-xl text-gray-600 leading-relaxed mb-8">{mission.description}</p>
-            
-            {/* Key Metrics */}
-            <div className="grid grid-cols-3 gap-6 mb-8">
-              {mission.metrics.map((metric, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-3xl font-black text-orange-700 mb-2">{metric.value}</div>
-                  <div className="text-sm text-gray-600 font-medium">{metric.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className={`transform transition-all duration-1000 ${
-            isVisible ? 'translate-x-0 opacity-100' : 'translate-x-20 opacity-0'
-          }`}>
-            <div className="relative">
-              {/* Glassmorphism Quote Card */}
-              <div className="bg-white/60 backdrop-blur-xl p-10 rounded-3xl border border-gray-200 shadow-2xl">
-                <div className="absolute -top-4 -left-4 w-8 h-8 bg-gradient-to-r from-orange-600 to-orange-700 rounded-full flex items-center justify-center">
-                  <span className="text-white text-lg font-bold">"</span>
-                </div>
-                
-                <p className="text-xl text-gray-700 leading-relaxed font-medium mb-10 italic">
-                  {mission.quote}
-                </p>
-                
-                {/* Enhanced Founder Card */}
-                <div className="flex items-center">
-                  <div className="relative">
-                    <div className="w-20 h-20 bg-gradient-to-br from-orange-600 to-orange-700 rounded-2xl flex items-center justify-center overflow-hidden">
-                      <img
-                        src={mission.founder.image}
-                        alt={mission.founder.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.parentElement.innerHTML = '<div class="text-white text-3xl font-bold">T</div>';
-                        }}
-                      />
-                    </div>
-                    <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center shadow-lg">
-                      <Shield className="w-4 h-4 text-white" />
-                    </div>
-                  </div>
-                  
-                  <div className="ml-6">
-                    <h4 className="text-2xl font-bold text-gray-900">{mission.founder.name}</h4>
-                    <p className="text-orange-700 font-semibold text-lg">{mission.founder.position}</p>
-                    <p className="text-gray-500 text-sm">{mission.founder.credentials}</p>
-                    
-                    <div className="flex items-center mt-2 gap-2">
-                      <a href={mission.founder.linkedin} className="text-orange-700 hover:text-orange-800 transition-colors">
-                        <Globe className="w-4 h-4" />
-                      </a>
-                      <span className="text-green-700 text-xs font-medium">Verified Leader</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Floating Elements */}
-              <div className="absolute -top-6 -right-6 w-12 h-12 bg-gradient-to-r from-orange-600 to-orange-700 rounded-full opacity-20 animate-pulse"></div>
-              <div className="absolute -bottom-4 -left-4 w-8 h-8 bg-gradient-to-r from-green-600 to-green-700 rounded-full opacity-30 animate-bounce"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const AdvancedValuesSection = ({ values }) => {
-  const [ref, isVisible] = useIntersectionObserver();
-  const [hoveredCard, setHoveredCard] = useState(null);
-
-  return (
-    <div ref={ref} className="py-24 bg-gradient-to-br from-stone-50 to-gray-50">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div className={`transform transition-all duration-1000 ${
-            isVisible ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'
-          }`}>
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold text-sm rounded-full mb-8">
-              <Zap className="w-4 h-4" />
-              {values.title}
-            </div>
-            
-            <h3 className="text-5xl md:text-7xl font-black text-gray-900 mb-8 leading-tight">
-              {values.mainTitle}{' '}
-              <span className="bg-gradient-to-r from-green-700 via-green-600 to-orange-700 bg-clip-text text-transparent">
-                {values.mainTitleHighlight}
-              </span>
-            </h3>
-            
-            <p className="text-xl text-gray-600 leading-relaxed">{values.description}</p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-6">
-            {values.items.map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={index}
-                  className={`group relative overflow-hidden bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 cursor-pointer ${
-                    isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
-                  }`}
-                  style={{ transitionDelay: `${index * 150}ms` }}
-                  onMouseEnter={() => setHoveredCard(index)}
-                  onMouseLeave={() => setHoveredCard(null)}
-                >
-                  {/* Animated Background */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
-                  
-                  {/* Progress Ring */}
-                  <div className="absolute top-4 right-4">
-                    <svg className="w-8 h-8 transform -rotate-90" viewBox="0 0 32 32">
-                      <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2" fill="none" className="text-gray-200" />
-                      <circle 
-                        cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="2" fill="none"
-                        className={`text-orange-600 transition-all duration-1000 ${hoveredCard === index ? 'stroke-dasharray-75 stroke-dashoffset-0' : 'stroke-dasharray-0'}`}
-                        style={{ strokeDasharray: '75.4', strokeDashoffset: hoveredCard === index ? '0' : '75.4' }}
-                      />
-                    </svg>
-                  </div>
-                  
-                  {/* Content */}
-                  <div className="relative z-10">
-                    <div className={`w-16 h-16 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-500`}>
-                      <Icon className="w-8 h-8 text-white" />
-                    </div>
-                    
-                    <h4 className="font-black text-xl text-gray-900 mb-4">{item.title}</h4>
-                    <p className="text-gray-600 leading-relaxed text-sm mb-4">{item.description}</p>
-                    
-                    {/* Tech Badge */}
-                    <div className="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">
-                      <Zap className="w-3 h-3" />
-                      {item.metrics}
-                    </div>
-                  </div>
-                  
-                  {/* Hover Effect */}
-                  <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${item.color} transform origin-left transition-transform duration-500 ${
-                    hoveredCard === index ? 'scale-x-100' : 'scale-x-0'
-                  }`}></div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const PremiumTeamSection = ({ team }) => {
-  const [ref, isVisible] = useIntersectionObserver();
-  const [selectedMember, setSelectedMember] = useState(null);
-
-  return (
-    <div ref={ref} className="py-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className={`text-center mb-20 transform transition-all duration-1000 ${
-          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
-        }`}>
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold text-sm rounded-full mb-8">
-            <Users className="w-4 h-4" />
-            {team.title}
-          </div>
-          
-          <h3 className="text-5xl md:text-7xl font-black text-gray-900 mb-8 leading-tight">
-            {team.mainTitle}{' '}
-            <span className="bg-gradient-to-r from-green-700 via-green-600 to-orange-700 bg-clip-text text-transparent">
-              {team.mainTitleHighlight}
-            </span>
-          </h3>
-          
-          <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            {team.description}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 xl:gap-10 items-start">
-          {team.members.map((member, index) => (
-            <div 
-              key={index}
-              className={`group relative transform transition-all duration-700 hover:scale-105 h-full ${
-                isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
-              }`}
-              style={{ transitionDelay: `${index * 200}ms` }}
-            >
-              <div className="relative overflow-hidden rounded-3xl bg-white shadow-xl hover:shadow-2xl transition-all duration-500 h-full flex flex-col">
-                {/* Member Image */}
-                <div className="relative h-72 xl:h-80 overflow-hidden flex-shrink-0">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.parentElement.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-orange-600 to-green-600 flex items-center justify-center text-white text-6xl font-bold">${member.name.charAt(0)}</div>`;
-                    }}
-                  />
-                  
-                  {/* Status Indicator */}
-                  <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full">
-                    <div className={`w-2 h-2 rounded-full ${member.status === 'online' ? 'bg-green-600' : 'bg-orange-600'}`}></div>
-                    <span className="text-xs font-medium text-gray-700 capitalize">{member.status}</span>
-                  </div>
-                  
-                  {/* Overlay on Hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        {member.skills.slice(0, 2).map((skill, skillIndex) => (
-                          <span key={skillIndex} className="px-2 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-medium rounded-full">
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                      <a href={member.linkedin} className="inline-flex items-center gap-2 px-3 py-2 bg-white/20 backdrop-blur-sm text-white font-medium text-sm rounded-full hover:bg-white/30 transition-colors">
-                        <Globe className="w-3 h-3" />
-                        Connect
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Member Info */}
-                <div className="p-6 xl:p-7 flex-grow flex flex-col">
-                  <h4 className="text-xl xl:text-2xl font-bold text-gray-900 mb-2">{member.name}</h4>
-                  <p className="text-lg font-semibold text-orange-700 mb-3">{member.position}</p>
-                  <p className="text-gray-600 leading-relaxed text-sm flex-grow">{member.bio}</p>
-                  
-                  {/* Interaction Button */}
-                  <button 
-                    onClick={() => setSelectedMember(selectedMember === index ? null : index)}
-                    className="mt-6 flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-600 to-orange-700 text-white font-medium text-sm rounded-xl hover:shadow-lg transition-all duration-300 w-full justify-center"
-                  >
-                    <Eye className="w-4 h-4" />
-                    {selectedMember === index ? 'Ẩn' : 'Xem thêm'}
-                  </button>
-                  
-                  {/* Expanded Details */}
-                  <div className={`mt-4 overflow-hidden transition-all duration-500 ${
-                    selectedMember === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                  }`}>
-                    <div className="p-4 bg-stone-50 rounded-xl">
-                      <h5 className="font-semibold text-gray-900 mb-2 text-sm">Kỹ năng chính:</h5>
-                      <div className="flex flex-wrap gap-1">
-                        {member.skills.map((skill, skillIndex) => (
-                          <span key={skillIndex} className="px-2 py-1 bg-orange-100 text-orange-800 text-xs font-medium rounded-lg">
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Corner Accent */}
-                <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-orange-600 to-transparent opacity-20"></div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const InteractiveVideoSection = () => {
-  const [ref, isVisible] = useIntersectionObserver();
-  
-  return (
-    <div ref={ref} className="py-24 bg-gradient-to-r from-gray-900 to-black text-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className={`text-center mb-16 transform transition-all duration-1000 ${
-          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
-        }`}>
-          <h2 className="text-5xl md:text-6xl font-bold mb-6">
-            Trải nghiệm <span className="bg-gradient-to-r from-orange-600 to-orange-700 bg-clip-text text-transparent">tương lai</span>
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Khám phá công nghệ AI tiên tiến đang cách mạng hóa ngành sự kiện
-          </p>
-        </div>
-        
-        <div className={`transform transition-all duration-1000 delay-500 ${
-          isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
-        }`}>
-          <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl">
-            <VideoPlayer 
-              videoUrl="/videos/platform-demo.mp4" 
-              className="w-full h-full"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 // Main Component
 export default function AboutPage() {
   useEffect(() => {
-    // Smooth scrolling
     document.documentElement.style.scrollBehavior = 'smooth';
     
-    // Preload critical images
     const criticalImages = [
       '/t.jpg',
       '/th.png', 
       '/nhat.png',
       '/n.png',
-      '/khang.png'
+      '/khang.png',
+      '/khoa.png',
+      '/mai.png'
     ];
     
     criticalImages.forEach(src => {
