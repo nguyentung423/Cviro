@@ -139,17 +139,17 @@ const aboutData = {
       {
         name: "Phạm Quang Minh",
         position: "Back-End Developer",
-        image: "/khoa.png",
+        image: "/m.jpg",
         bio: "Đại học Phenikaa",
-        skills: ["Full-stack Dev", "System Design", "Cloud Architecture"],
-        linkedin: "https://linkedin.com/in/tranminhkhoa",
+        skills: ["Node.js", "REST API", "MongoDB"],
+        linkedin: "",
         status: "online"
       },
       {
-        name: "Lê Thị Mai",
-        position: "HR Specialist",
+        name: "Coming soon",
+        position: "Coming soon",
         image: "/mai.png",
-        bio: "Đại học Ngoại Thương",
+        bio: "Coming soon",
         skills: ["Talent Acquisition", "Employee Relations", "HR Analytics"],
         linkedin: "https://linkedin.com/in/lethimai",
         status: "online"
