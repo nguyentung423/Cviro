@@ -20,24 +20,19 @@ export default function Header() {
       if (!ticking.current) {
         requestAnimationFrame(() => {
           const currentScrollY = window.scrollY;
-          const scrollThreshold = 10; // Ngưỡng cuộn tối thiểu
-          
-          // Chỉ xử lý khi cuộn đủ khoảng cách
+          const scrollThreshold = 10;
+
           if (Math.abs(currentScrollY - lastScrollY) < scrollThreshold) {
             ticking.current = false;
             return;
           }
 
-          // Luôn hiện header khi ở đầu trang
           if (currentScrollY <= 100) {
             setShowHeader(true);
           } else {
-            // Logic cuộn xuống/lên với debounce
             if (currentScrollY > lastScrollY && currentScrollY > 100) {
-              // Cuộn xuống - ẩn header
               setShowHeader(false);
             } else if (currentScrollY < lastScrollY) {
-              // Cuộn lên - hiện header
               setShowHeader(true);
             }
           }
@@ -49,15 +44,13 @@ export default function Header() {
       }
     };
 
-    // Passive listener để tối ưu performance
     window.addEventListener("scroll", handleScroll, { passive: true });
-    
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [lastScrollY]);
 
-  // Đóng mobile menu khi resize
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768 && isMenuOpen) {
@@ -69,14 +62,13 @@ export default function Header() {
     return () => window.removeEventListener("resize", handleResize);
   }, [isMenuOpen]);
 
-  // Prevent body scroll khi mobile menu mở
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
     }
-    
+
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -85,13 +77,12 @@ export default function Header() {
   return (
     <header
       className={`sticky top-0 z-50 bg-white shadow-sm transition-all duration-300 ease-in-out ${
-        showHeader 
-          ? "translate-y-0 opacity-100" 
+        showHeader
+          ? "translate-y-0 opacity-100"
           : "-translate-y-full opacity-0"
       }`}
     >
       <div className="flex items-center justify-between sm:px-4 py-4">
-        {/* Logo */}
         <Link to="/" className="flex items-center gap-2 z-10">
           <img
             src={navLogo}
@@ -101,7 +92,6 @@ export default function Header() {
           />
         </Link>
 
-        {/* Desktop menu */}
         <nav className="hidden items-center gap-6 md:flex">
           {navLinks.map((link) => (
             <NavLink
@@ -124,7 +114,6 @@ export default function Header() {
           </Link>
         </nav>
 
-        {/* Mobile menu button */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="text-2xl text-[#333333] md:hidden z-10 p-1 transition-transform duration-200 hover:scale-110 active:scale-95"
@@ -138,8 +127,8 @@ export default function Header() {
       {/* Mobile menu overlay */}
       <div
         className={`fixed inset-0 bg-black bg-opacity-50 md:hidden transition-opacity duration-300 ${
-          isMenuOpen 
-            ? "opacity-100 pointer-events-auto" 
+          isMenuOpen
+            ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setIsMenuOpen(false)}
@@ -147,13 +136,14 @@ export default function Header() {
 
       {/* Mobile menu */}
       <div
-        className={`absolute left-0 right-0 top-full bg-white shadow-lg md:hidden transition-all duration-300 ease-in-out ${
+        className={`fixed inset-x-0 top-0 bg-white shadow-lg md:hidden transition-all duration-300 ease-in-out ${
           isMenuOpen
-            ? "translate-y-0 opacity-100"
-            : "-translate-y-2 opacity-0 pointer-events-none"
+            ? "translate-y-0 opacity-100 pointer-events-auto"
+            : "-translate-y-full opacity-0 pointer-events-none"
         }`}
+        style={{ zIndex: 60 }} // Ensure it stays above the header
       >
-        <nav className="flex flex-col px-4 py-3">
+        <nav className="flex flex-col px-4 py-6">
           {navLinks.map((link, index) => (
             <NavLink
               key={link.name}
@@ -165,7 +155,7 @@ export default function Header() {
                 }`
               }
               style={{
-                transitionDelay: isMenuOpen ? `${index * 50}ms` : "0ms"
+                transitionDelay: isMenuOpen ? `${index * 50}ms` : "0ms",
               }}
             >
               {link.name}
@@ -176,7 +166,7 @@ export default function Header() {
             onClick={() => setIsMenuOpen(false)}
             className="mt-2 rounded-xl bg-[#ab3f20] px-4 py-2 text-center text-sm font-semibold text-white shadow-md transition-all duration-200 hover:brightness-95 hover:scale-105 active:scale-95"
             style={{
-              transitionDelay: isMenuOpen ? `${navLinks.length * 50}ms` : "0ms"
+              transitionDelay: isMenuOpen ? `${navLinks.length * 50}ms` : "0ms",
             }}
           >
             Đăng ký ngay
