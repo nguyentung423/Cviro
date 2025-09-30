@@ -111,7 +111,7 @@ const aboutData = {
       },
       {
         name: "Bảo Nhật",
-        position: "AI Engineer",
+        position: "AI Developer",
         image: "/nhat.png",
         bio: "Trường Đại học Văn Lang",
         skills: ["Machine Learning", "Deep Learning", "Python"],
@@ -129,7 +129,7 @@ const aboutData = {
       },
       {
         name: "Hà Hải Yến",
-        position: "BD Manager",
+        position: "Business Development Manager",
         image: "/khang.png",
         bio: "Đại học Kinh Tế Quốc Dân",
         skills: ["Business Strategy", "Partnership", "Market Analysis"],
@@ -137,10 +137,10 @@ const aboutData = {
         status: "online"
       },
       {
-        name: "Trần Minh Khoa",
-        position: "Tech Lead",
+        name: "Phạm Quang Minh",
+        position: "Back-End Developer",
         image: "/khoa.png",
-        bio: "Trường Đại học Bách Khoa HN",
+        bio: "Đại học Phenikaa",
         skills: ["Full-stack Dev", "System Design", "Cloud Architecture"],
         linkedin: "https://linkedin.com/in/tranminhkhoa",
         status: "online"
@@ -757,6 +757,15 @@ const PremiumTeamSection = ({ team }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Tạo mảng members lặp lại để tạo hiệu ứng infinite loop
   const extendedMembers = [...team.members, ...team.members, ...team.members];
@@ -801,25 +810,27 @@ const PremiumTeamSection = ({ team }) => {
     }
   };
 
+  const itemWidth = isMobile ? 100 : 33.333;
+
   return (
-    <div ref={ref} className="py-24 bg-gradient-to-b from-white to-stone-50">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className={`text-center mb-20 transform transition-all duration-1000 ${
+    <div ref={ref} className="py-16 md:py-24 bg-gradient-to-b from-white to-stone-50">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
+        <div className={`text-center mb-12 md:mb-20 transform transition-all duration-1000 ${
           isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
         }`}>
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold text-sm rounded-full mb-8">
-            <Users className="w-4 h-4" />
+          <div className="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold text-xs md:text-sm rounded-full mb-6 md:mb-8">
+            <Users className="w-3 h-3 md:w-4 md:h-4" />
             {team.title}
           </div>
           
-          <h3 className="text-5xl md:text-7xl font-black text-gray-900 mb-8 leading-tight">
+          <h3 className="text-3xl md:text-5xl lg:text-7xl font-black text-gray-900 mb-4 md:mb-8 leading-tight px-4">
             {team.mainTitle}{' '}
             <span className="bg-gradient-to-r from-green-700 via-green-600 to-orange-700 bg-clip-text text-transparent">
               {team.mainTitleHighlight}
             </span>
           </h3>
           
-          <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-base md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed px-4">
             {team.description}
           </p>
         </div>
@@ -828,62 +839,64 @@ const PremiumTeamSection = ({ team }) => {
           className="relative"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
         >
-          <div className="flex justify-center mb-8 gap-2">
+          <div className="flex justify-center mb-6 md:mb-8 gap-2">
             {team.members.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`h-2 rounded-full transition-all duration-300 ${
+                className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
                   index === (currentIndex % team.members.length)
-                    ? 'w-8 bg-gradient-to-r from-orange-600 to-orange-700' 
-                    : 'w-2 bg-gray-300 hover:bg-gray-400'
+                    ? 'w-6 md:w-8 bg-gradient-to-r from-orange-600 to-orange-700' 
+                    : 'w-1.5 md:w-2 bg-gray-300 hover:bg-gray-400'
                 }`}
               />
             ))}
           </div>
 
-          <div className="relative overflow-hidden">
+          <div className="relative overflow-hidden mx-auto" style={{ maxWidth: isMobile ? '100%' : '100%' }}>
             <div 
               className={`flex ${isTransitioning ? 'transition-transform duration-700 ease-in-out' : ''}`}
               style={{ 
-                transform: `translateX(-${currentIndex * (100 / 3)}%)`,
+                transform: `translateX(-${currentIndex * itemWidth}%)`,
               }}
             >
               {extendedMembers.map((member, index) => (
                 <div 
                   key={`${member.name}-${index}`}
-                  className="flex-shrink-0 px-4"
-                  style={{ width: '33.333%' }}
+                  className="flex-shrink-0 px-2 md:px-4"
+                  style={{ width: `${itemWidth}%` }}
                 >
                   <div className="group relative transform transition-all duration-500 hover:scale-105">
-                    <div className="relative overflow-hidden rounded-3xl bg-white shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col h-full">
-                      <div className="relative h-80 overflow-hidden flex-shrink-0">
+                    <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-white shadow-xl hover:shadow-2xl transition-all duration-500 flex flex-col h-full">
+                      <div className="relative h-64 md:h-80 overflow-hidden flex-shrink-0">
                         <img
                           src={member.image}
                           alt={member.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           onError={(e) => {
                             e.target.style.display = 'none';
-                            e.target.parentElement.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-orange-600 to-green-600 flex items-center justify-center text-white text-6xl font-bold">${member.name.charAt(0)}</div>`;
+                            e.target.parentElement.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-orange-600 to-green-600 flex items-center justify-center text-white text-4xl md:text-6xl font-bold">${member.name.charAt(0)}</div>`;
                           }}
                         />
                         
-                        <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full">
-                          <div className={`w-2 h-2 rounded-full ${member.status === 'online' ? 'bg-green-600 animate-pulse' : 'bg-orange-600'}`}></div>
+                        <div className="absolute top-3 right-3 md:top-4 md:right-4 flex items-center gap-1.5 md:gap-2 px-2 md:px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full">
+                          <div className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full ${member.status === 'online' ? 'bg-green-600 animate-pulse' : 'bg-orange-600'}`}></div>
                           <span className="text-xs font-medium text-gray-700 capitalize">{member.status}</span>
                         </div>
                         
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                          <div className="absolute bottom-4 left-4 right-4">
-                            <div className="flex flex-wrap gap-1 mb-3">
+                          <div className="absolute bottom-3 left-3 right-3 md:bottom-4 md:left-4 md:right-4">
+                            <div className="flex flex-wrap gap-1 mb-2 md:mb-3">
                               {member.skills.slice(0, 2).map((skill, skillIndex) => (
-                                <span key={skillIndex} className="px-2 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-medium rounded-full">
+                                <span key={skillIndex} className="px-1.5 md:px-2 py-0.5 md:py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-medium rounded-full">
                                   {skill}
                                 </span>
                               ))}
                             </div>
-                            <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-2 bg-white/20 backdrop-blur-sm text-white font-medium text-sm rounded-full hover:bg-white/30 transition-colors">
+                            <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1.5 md:py-2 bg-white/20 backdrop-blur-sm text-white font-medium text-xs md:text-sm rounded-full hover:bg-white/30 transition-colors">
                               <Globe className="w-3 h-3" />
                               Connect
                             </a>
@@ -891,23 +904,23 @@ const PremiumTeamSection = ({ team }) => {
                         </div>
                       </div>
                       
-                      <div className="p-6 flex-grow flex flex-col">
-                        <h4 className="text-2xl font-bold text-gray-900 mb-2">{member.name}</h4>
-                        <p className="text-lg font-semibold text-orange-700 mb-3">{member.position}</p>
+                      <div className="p-4 md:p-6 flex-grow flex flex-col">
+                        <h4 className="text-xl md:text-2xl font-bold text-gray-900 mb-1 md:mb-2">{member.name}</h4>
+                        <p className="text-base md:text-lg font-semibold text-orange-700 mb-2 md:mb-3">{member.position}</p>
                         <p className="text-gray-600 leading-relaxed text-sm flex-grow">{member.bio}</p>
                         
                         <button 
                           onClick={() => setSelectedMember(selectedMember === index ? null : index)}
-                          className="mt-6 flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-600 to-orange-700 text-white font-medium text-sm rounded-xl hover:shadow-lg transition-all duration-300 w-full justify-center"
+                          className="mt-4 md:mt-6 flex items-center gap-2 px-4 py-2.5 md:py-2 bg-gradient-to-r from-orange-600 to-orange-700 text-white font-medium text-sm rounded-xl hover:shadow-lg transition-all duration-300 w-full justify-center"
                         >
                           <Eye className="w-4 h-4" />
                           {selectedMember === index ? 'Ẩn' : 'Xem thêm'}
                         </button>
                         
-                        <div className={`mt-4 overflow-hidden transition-all duration-500 ${
+                        <div className={`mt-3 md:mt-4 overflow-hidden transition-all duration-500 ${
                           selectedMember === index ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
                         }`}>
-                          <div className="p-4 bg-stone-50 rounded-xl">
+                          <div className="p-3 md:p-4 bg-stone-50 rounded-xl">
                             <h5 className="font-semibold text-gray-900 mb-2 text-sm">Kỹ năng chính:</h5>
                             <div className="flex flex-wrap gap-1">
                               {member.skills.map((skill, skillIndex) => (
@@ -920,7 +933,7 @@ const PremiumTeamSection = ({ team }) => {
                         </div>
                       </div>
                       
-                      <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-orange-600 to-transparent opacity-20"></div>
+                      <div className="absolute top-0 right-0 w-12 h-12 md:w-16 md:h-16 bg-gradient-to-bl from-orange-600 to-transparent opacity-20"></div>
                     </div>
                   </div>
                 </div>
@@ -930,16 +943,18 @@ const PremiumTeamSection = ({ team }) => {
 
           <button
             onClick={prevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-300 hover:scale-110 z-10"
+            className="absolute left-2 md:left-0 top-1/2 -translate-y-1/2 md:-translate-x-4 w-10 h-10 md:w-12 md:h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-300 hover:scale-110 z-10"
+            aria-label="Previous slide"
           >
-            <ChevronLeft className="w-6 h-6 text-gray-700" />
+            <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
           </button>
 
           <button
             onClick={nextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-300 hover:scale-110 z-10"
+            className="absolute right-2 md:right-0 top-1/2 -translate-y-1/2 md:translate-x-4 w-10 h-10 md:w-12 md:h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-all duration-300 hover:scale-110 z-10"
+            aria-label="Next slide"
           >
-            <ChevronRight className="w-6 h-6 text-gray-700" />
+            <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
           </button>
         </div>
       </div>
