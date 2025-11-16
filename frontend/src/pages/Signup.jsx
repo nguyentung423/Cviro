@@ -39,7 +39,7 @@ export default function Signup() {
                 Người tìm việc
               </h3>
               <p className="text-gray-600 mb-6">
-                Khám phá cơ hội nghề nghiệp trong ngành tổ chức sự kiện, từ event planner đến technical staff.
+                Khám phá cơ hội nghề nghiệp trong ngành tổ chức sự kiện, từ kế hoạch sự kiện đến nhân viên kỹ thuật.
               </p>
               
               <div className="space-y-3 mb-8">
@@ -116,7 +116,7 @@ export default function Signup() {
               <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Users className="w-6 h-6 text-orange-600" />
               </div>
-              <h4 className="font-bold text-gray-900 mb-2">Chuyên ngành Event</h4>
+              <h4 className="font-bold text-gray-900 mb-2">Chuyên ngành Sự kiện</h4>
               <p className="text-gray-600 text-sm">
                 Nền tảng tuyển dụng dành riêng cho ngành tổ chức sự kiện
               </p>

@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./layout/Layout";
-import ScrollToTop from "./ScrollToTop";   // ✅ import thêm
+import ScrollToTop from "./ScrollToTop";
 
 // Trang chính
 import Home from "./pages/Home";
@@ -13,9 +13,6 @@ import SignupCandidate from "./pages/SignupCandidate";
 import SignupAgency from "./pages/SignupAgency";
 import LoginCandidate from "./pages/LoginCandidate";
 import LoginAgency from "./pages/LoginAgency";
-
-// Test Supabase
-import TestSupabase from "./TestSupabase";
 
 // Dashboard cho Agency
 import AgencyDashboard from "./pages/dashboard/AgencyDashboard";
@@ -37,7 +34,7 @@ import CandidateSettings from "./pages/candidate/Settings";
 const App = () => {
   return (
     <Router>
-      <ScrollToTop />    {/* ✅ thêm dòng này */}
+      <ScrollToTop />
       <Layout>
         <Routes>
           {/* Public */}
@@ -53,9 +50,6 @@ const App = () => {
           {/* Login */}
           <Route path="/login/candidate" element={<LoginCandidate />} />
           <Route path="/login/agency" element={<LoginAgency />} />
-
-          {/* Test Supabase */}
-          <Route path="/test-supabase" element={<TestSupabase />} />
 
           {/* Agency Dashboard */}
           <Route path="/agency" element={<AgencyDashboard />}>

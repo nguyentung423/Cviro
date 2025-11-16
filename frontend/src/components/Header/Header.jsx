@@ -12,36 +12,40 @@ const navLinks = [
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showHeader, setShowHeader] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollYRef = useRef(0);
   const ticking = useRef(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (!ticking.current) {
-        requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
-          const scrollThreshold = 10;
+      if (ticking.current) return;
 
-          if (Math.abs(currentScrollY - lastScrollY) < scrollThreshold) {
-            ticking.current = false;
-            return;
-          }
+      ticking.current = true;
+
+      requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        const lastScrollY = lastScrollYRef.current;
+        const scrollThreshold = 10;
+
+        if (Math.abs(currentScrollY - lastScrollY) >= scrollThreshold) {
+          let nextShowHeader = showHeader;
 
           if (currentScrollY <= 100) {
-            setShowHeader(true);
-          } else {
-            if (currentScrollY > lastScrollY && currentScrollY > 100) {
-              setShowHeader(false);
-            } else if (currentScrollY < lastScrollY) {
-              setShowHeader(true);
-            }
+            nextShowHeader = true;
+          } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+            nextShowHeader = false;
+          } else if (currentScrollY < lastScrollY) {
+            nextShowHeader = true;
           }
 
-          setLastScrollY(currentScrollY);
-          ticking.current = false;
-        });
-        ticking.current = true;
-      }
+          if (nextShowHeader !== showHeader) {
+            setShowHeader(nextShowHeader);
+          }
+
+          lastScrollYRef.current = currentScrollY;
+        }
+
+        ticking.current = false;
+      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -49,7 +53,7 @@ export default function Header() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [lastScrollY]);
+  }, [showHeader]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -86,7 +90,7 @@ export default function Header() {
         <Link to="/" className="flex items-center gap-2 z-10">
           <img
             src={navLogo}
-            alt="CREWNEXT logo"
+            alt="Cviro logo"
             className="h-13 w-auto object-contain"
             loading="eager"
           />

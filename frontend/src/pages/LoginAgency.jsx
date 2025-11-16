@@ -1,68 +1,68 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { loginAgency } from "../lib/authApi";
-
-import { 
-  Calendar, 
-  Building2, 
-  Mail, 
-  Lock, 
-  Eye, 
-  EyeOff, 
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
   ArrowLeft,
   AlertCircle,
-  CheckCircle,
-  Users,
-  Star,
-  Briefcase,
-  TrendingUp,
-  Award,
-  Target
+  CheckCircle2,
+  Building2,
 } from "lucide-react";
 
-const InputField = ({ icon: Icon, error, type = "text", ...props }) => (
-  <div className="space-y-1">
-    <div className="relative">
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-        <Icon className="h-5 w-5 text-gray-400" />
+const InputField = ({ icon: Icon, error, success, type = "text", ...props }) => (
+  <div className="space-y-2">
+    <div className="relative group">
+      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-200">
+        <Icon className={`h-5 w-5 transition-colors ${error ? 'text-red-500' : success ? 'text-green-500' : 'text-gray-400 group-focus-within:text-green-500'}`} />
       </div>
       <input
         type={type}
-        className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+        className={`w-full pl-12 pr-4 py-3.5 md:py-4 border-2 rounded-2xl transition-all duration-200 focus:outline-none text-base ${
           error 
-            ? 'border-red-300 bg-red-50' 
-            : 'border-gray-200 bg-white hover:border-gray-300 focus:bg-white'
+            ? "border-red-300 bg-red-50/50 focus:border-red-500 focus:ring-4 focus:ring-red-100" 
+            : success
+            ? "border-green-300 bg-green-50/50 focus:border-green-500 focus:ring-4 focus:ring-green-100"
+            : "border-gray-200 bg-white hover:border-gray-300 focus:border-green-500 focus:ring-4 focus:ring-green-100"
         }`}
         {...props}
       />
+      {success && (
+        <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
+          <CheckCircle2 className="h-5 w-5 text-green-500" />
+        </div>
+      )}
     </div>
     {error && (
-      <div className="flex items-center space-x-1 text-red-600 text-sm">
-        <AlertCircle className="h-4 w-4" />
+      <div className="flex items-center space-x-1.5 text-red-600 text-sm">
+        <AlertCircle className="h-4 w-4 flex-shrink-0" />
         <span>{error}</span>
       </div>
     )}
   </div>
 );
 
-const PasswordField = ({ icon: Icon, error, show, onToggle, ...props }) => (
-  <div className="space-y-1">
-    <div className="relative">
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-        <Icon className="h-5 w-5 text-gray-400" />
+const PasswordField = ({ icon: Icon, error, success, show, onToggle, ...props }) => (
+  <div className="space-y-2">
+    <div className="relative group">
+      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-200">
+        <Icon className={`h-5 w-5 transition-colors ${error ? 'text-red-500' : success ? 'text-green-500' : 'text-gray-400 group-focus-within:text-green-500'}`} />
       </div>
       <input
         type={show ? "text" : "password"}
-        className={`w-full pl-10 pr-12 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+        className={`w-full pl-12 pr-12 py-3.5 md:py-4 border-2 rounded-2xl transition-all duration-200 focus:outline-none text-base ${
           error 
-            ? 'border-red-300 bg-red-50' 
-            : 'border-gray-200 bg-white hover:border-gray-300 focus:bg-white'
+            ? "border-red-300 bg-red-50/50 focus:border-red-500 focus:ring-4 focus:ring-red-100" 
+            : success
+            ? "border-green-300 bg-green-50/50 focus:border-green-500 focus:ring-4 focus:ring-green-100"
+            : "border-gray-200 bg-white hover:border-gray-300 focus:border-green-500 focus:ring-4 focus:ring-green-100"
         }`}
         {...props}
       />
       <button
         type="button"
-        className="absolute inset-y-0 right-0 pr-3 flex items-center"
+        className="absolute inset-y-0 right-0 pr-4 flex items-center hover:scale-110 transition-transform duration-200"
         onClick={onToggle}
       >
         {show ? (
@@ -73,8 +73,8 @@ const PasswordField = ({ icon: Icon, error, show, onToggle, ...props }) => (
       </button>
     </div>
     {error && (
-      <div className="flex items-center space-x-1 text-red-600 text-sm">
-        <AlertCircle className="h-4 w-4" />
+      <div className="flex items-center space-x-1.5 text-red-600 text-sm">
+        <AlertCircle className="h-4 w-4 flex-shrink-0" />
         <span>{error}</span>
       </div>
     )}
@@ -92,6 +92,7 @@ export default function LoginAgency() {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [fieldSuccess, setFieldSuccess] = useState({});
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -104,271 +105,243 @@ export default function LoginAgency() {
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
+    
+    // Show success for valid email
+    if (name === 'email' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      setFieldSuccess((prev) => ({ ...prev, email: true }));
+    } else if (name === 'email') {
+      setFieldSuccess((prev) => ({ ...prev, email: false }));
+    }
+    
+    // Show success for valid password
+    if (name === 'password' && value.length >= 6) {
+      setFieldSuccess((prev) => ({ ...prev, password: true }));
+    } else if (name === 'password') {
+      setFieldSuccess((prev) => ({ ...prev, password: false }));
+    }
   };
 
   const validateForm = () => {
     const newErrors = {};
     
     if (!formData.email.trim()) {
-      newErrors.email = 'Email là bắt buộc';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Vui lòng nhập email';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Email không hợp lệ';
     }
     
     if (!formData.password) {
-      newErrors.password = 'Mật khẩu là bắt buộc';
+      newErrors.password = 'Vui lòng nhập mật khẩu';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
     }
 
+    setErrors(newErrors);
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleLogin = async () => {
-    if (!validateForm()) return;
+  const handleLogin = async (e) => {
+    e.preventDefault();
     
+    if (!validateForm()) return;
+
     setIsLoading(true);
-    try {
-      const data = await loginAgency({
-        email: formData.email,
-        password: formData.password,
-      });
-      nav("/agency");
-    } catch (err) {
-      setErrors({ email: err.message || "Sai email hoặc mật khẩu" });
-    } finally {
+    setTimeout(() => {
+      console.log("Login Agency:", formData);
       setIsLoading(false);
-    }
+      nav("/agency/dashboard");
+    }, 1500);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/signup" className="flex items-center space-x-2 text-gray-600 hover:text-orange-600 transition-colors">
-              <ArrowLeft className="w-5 h-5" />
-              <span>Quay lại</span>
-            </Link>
-          </div>
-        </div>
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-green-50 via-white to-green-50/30 animate-gradient-shift">
+      {/* Animated background orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-green-200/30 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div className="absolute top-1/2 -left-32 w-80 h-80 bg-emerald-200/20 rounded-full blur-3xl animate-pulse-slow-delayed"></div>
+        <div className="absolute -bottom-32 right-1/4 w-96 h-96 bg-green-100/40 rounded-full blur-3xl animate-pulse-slow"></div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Side - Hero Content */}
-          <div className="space-y-8">
-            <div>
-              <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
-                <Building2 className="w-8 h-8 text-green-600" />
+      {/* Content */}
+      <div className="relative z-10">
+        {/* Header */}
+        <div className="bg-white/60 backdrop-blur-lg border-b border-green-100/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent hover:from-green-700 hover:to-emerald-700 transition-all">
+                Cviro
+              </Link>
+              <Link
+                to="/"
+                className="flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-green-600 transition-colors group"
+              >
+                <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+                <span>Trang chủ</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Form */}
+        <div className="max-w-md mx-auto px-4 py-8 sm:py-12 md:py-16">
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-green-500/10 p-6 sm:p-8 md:p-10 border border-green-100/50">
+            {/* Icon & Title */}
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-4 shadow-lg shadow-green-500/30">
+                <Building2 className="h-8 w-8 text-white" />
               </div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                Quản lý tuyển dụng hiệu quả
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                Đăng nhập Agency
               </h1>
-              <p className="text-xl text-gray-600 mb-6">
-                Đăng nhập để tìm kiếm nhân tài hàng đầu cho dự án sự kiện của bạn
+              <p className="text-gray-600 text-sm sm:text-base">
+                Quản lý tuyển dụng hiệu quả cho sự kiện
               </p>
             </div>
 
-            {/* Features for Agencies */}
-            <div className="space-y-6">
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Target className="w-6 h-6 text-green-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Tuyển dụng chất lượng</h3>
-                  <p className="text-gray-600">Tiếp cận hàng ngàn ứng viên tài năng trong ngành tổ chức sự kiện</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <TrendingUp className="w-6 h-6 text-orange-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Quản lý thông minh</h3>
-                  <p className="text-gray-600">Dashboard chuyên nghiệp để theo dõi và quản lý quy trình tuyển dụng</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Award className="w-6 h-6 text-green-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Thương hiệu uy tín</h3>
-                  <p className="text-gray-600">Xây dựng thương hiệu nhà tuyển dụng chuyên nghiệp trong ngành</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Agency Stats */}
-            <div className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-200">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600 mb-1">98%</div>
-                <div className="text-sm text-gray-600">Thành công</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-orange-600 mb-1">72h</div>
-                <div className="text-sm text-gray-600">Thời gian TB</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600 mb-1">5★</div>
-                <div className="text-sm text-gray-600">Đánh giá</div>
-              </div>
-            </div>
-
-            {/* Testimonial */}
-            <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white font-semibold">VT</span>
-                </div>
-                <div>
-                  <p className="text-gray-700 mb-3 italic">
-                    "Cviro giúp chúng tôi tìm được những ứng viên chất lượng cao cho các dự án lớn. 
-                    Quy trình đơn giản và hiệu quả."
-                  </p>
-                  <div>
-                    <p className="font-semibold text-gray-900">Việt Tuấn</p>
-                    <p className="text-sm text-gray-600">CEO - VT Events</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Side - Login Form */}
-          <div className="max-w-md mx-auto w-full">
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8">
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Building2 className="w-8 h-8 text-green-600" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Đăng nhập</h2>
-                <p className="text-gray-600">Nhà tuyển dụng</p>
-              </div>
-
-              <div className="space-y-6">
+            {/* Form */}
+            <form onSubmit={handleLogin} className="space-y-5">
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Email
+                </label>
                 <InputField
                   icon={Mail}
-                  name="email"
                   type="email"
-                  placeholder="Email công ty"
+                  name="email"
+                  placeholder="agency@example.com"
                   value={formData.email}
                   onChange={handleInputChange}
                   error={errors.email}
+                  success={fieldSuccess.email}
+                  autoComplete="email"
                 />
+              </div>
 
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Mật khẩu
+                </label>
                 <PasswordField
                   icon={Lock}
                   name="password"
-                  placeholder="Mật khẩu"
+                  placeholder="Nhập mật khẩu"
                   value={formData.password}
                   onChange={handleInputChange}
                   error={errors.password}
+                  success={fieldSuccess.password}
                   show={showPassword}
                   onToggle={() => setShowPassword(!showPassword)}
+                  autoComplete="current-password"
                 />
+              </div>
 
-                {/* Remember Me & Forgot Password */}
-                <div className="flex items-center justify-between">
-                  <label className="flex items-center space-x-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      name="rememberMe"
-                      checked={formData.rememberMe}
-                      onChange={handleInputChange}
-                      className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 focus:ring-2"
-                    />
-                    <span className="text-sm text-gray-700">Ghi nhớ đăng nhập</span>
-                  </label>
-                  <Link to="/forgot-password" className="text-sm text-green-600 hover:text-green-700 font-medium">
-                    Quên mật khẩu?
-                  </Link>
+              {/* Remember & Forgot */}
+              <div className="flex items-center justify-between text-sm">
+                <label className="flex items-center space-x-2 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    name="rememberMe"
+                    checked={formData.rememberMe}
+                    onChange={handleInputChange}
+                    className="w-4 h-4 rounded border-gray-300 text-green-600 focus:ring-green-500 focus:ring-offset-0 transition-colors cursor-pointer"
+                  />
+                  <span className="text-gray-700 group-hover:text-gray-900 transition-colors">Ghi nhớ</span>
+                </label>
+                <Link
+                  to="/forgot-password"
+                  className="font-medium text-green-600 hover:text-green-700 transition-colors"
+                >
+                  Quên mật khẩu?
+                </Link>
+              </div>
+
+              {/* Login Button */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3.5 md:py-4 rounded-2xl transition-all duration-200 shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0 flex items-center justify-center space-x-2"
+              >
+                {isLoading ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Đang đăng nhập...</span>
+                  </>
+                ) : (
+                  <span>Đăng nhập</span>
+                )}
+              </button>
+
+              {/* Divider */}
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200"></div>
                 </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-white/80 text-gray-500">hoặc đăng nhập với</span>
+                </div>
+              </div>
 
-                {/* Login Button */}
+              {/* Social Login */}
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={handleLogin}
-                  disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-green-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="flex items-center justify-center space-x-2 px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-green-300 hover:bg-green-50/50 transition-all duration-200 group"
                 >
-                  {isLoading ? (
-                    <div className="flex items-center justify-center space-x-2">
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Đang đăng nhập...</span>
-                    </div>
-                  ) : (
-                    'Đăng nhập'
-                  )}
+                  <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                  </svg>
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-green-600 transition-colors">Google</span>
                 </button>
+                <button
+                  type="button"
+                  className="flex items-center justify-center space-x-2 px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-green-300 hover:bg-green-50/50 transition-all duration-200 group"
+                >
+                  <svg className="w-5 h-5" fill="#1877F2" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-green-600 transition-colors">Facebook</span>
+                </button>
+              </div>
+            </form>
 
-                {/* Enterprise Login */}
-                <div className="relative my-6">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-200"></div>
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-4 bg-white text-gray-500">Dành cho doanh nghiệp lớn</span>
-                  </div>
-                </div>
-
-                <Link to="/enterprise-login" className="w-full">
-                  <button className="w-full flex items-center justify-center px-4 py-3 border-2 border-green-200 rounded-xl hover:bg-green-50 transition-colors duration-200 text-green-700 font-medium">
-                    <Building2 className="w-5 h-5 mr-2" />
-                    <span>Đăng nhập Enterprise</span>
-                  </button>
+            {/* Sign up link */}
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">
+                Chưa có tài khoản?{" "}
+                <Link
+                  to="/signup/agency"
+                  className="font-semibold text-green-600 hover:text-green-700 transition-colors"
+                >
+                  Đăng ký ngay
                 </Link>
-              </div>
-
-              {/* Sign Up Link */}
-              <div className="text-center mt-8 pt-8 border-t border-gray-200">
-                <p className="text-gray-600">
-                  Chưa có tài khoản?{" "}
-                  <Link to="/signup/agency" className="text-green-600 hover:text-green-700 font-semibold">
-                    Đăng ký ngay
-                  </Link>
-                </p>
-              </div>
+              </p>
             </div>
+          </div>
 
-            {/* Switch Role */}
-            <div className="text-center mt-6">
-              <p className="text-gray-600 mb-2">Bạn là ứng viên?</p>
-              <Link to="/login/candidate" className="inline-flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-medium">
-                <span>Đăng nhập với vai trò Ứng viên</span>
-                <ArrowLeft className="w-4 h-4 rotate-180" />
+          {/* Switch to Candidate */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Bạn là ứng viên?{" "}
+              <Link
+                to="/login/candidate"
+                className="font-semibold text-green-600 hover:text-green-700 transition-colors"
+              >
+                Đăng nhập tại đây
               </Link>
-            </div>
-
-            {/* Quick Access */}
-            <div className="bg-white rounded-xl p-6 border border-gray-200 mt-6">
-              <h4 className="font-semibold text-gray-900 mb-4">Truy cập nhanh</h4>
-              <div className="grid grid-cols-2 gap-3">
-                <Link to="/post-job" className="flex items-center space-x-2 text-sm text-gray-600 hover:text-green-600 p-2 rounded-lg hover:bg-green-50">
-                  <Briefcase className="w-4 h-4" />
-                  <span>Đăng tin</span>
-                </Link>
-                <Link to="/candidates" className="flex items-center space-x-2 text-sm text-gray-600 hover:text-green-600 p-2 rounded-lg hover:bg-green-50">
-                  <Users className="w-4 h-4" />
-                  <span>Tìm ứng viên</span>
-                </Link>
-                <Link to="/analytics" className="flex items-center space-x-2 text-sm text-gray-600 hover:text-green-600 p-2 rounded-lg hover:bg-green-50">
-                  <TrendingUp className="w-4 h-4" />
-                  <span>Thống kê</span>
-                </Link>
-                <Link to="/support" className="flex items-center space-x-2 text-sm text-gray-600 hover:text-green-600 p-2 rounded-lg hover:bg-green-50">
-                  <CheckCircle className="w-4 h-4" />
-                  <span>Hỗ trợ</span>
-                </Link>
-              </div>
-            </div>
+            </p>
           </div>
         </div>
       </div>
     </div>
   );
 }
+

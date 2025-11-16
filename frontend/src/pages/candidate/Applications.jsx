@@ -1,89 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { supabase } from "../../lib/supabaseClient";
 import { AlertCircle, Users } from "lucide-react";
+import { mockCandidateApplications } from "../../data/mockData";
+
+const statusColors = {
+  pending: "text-amber-600 bg-amber-100",
+  accepted: "text-emerald-600 bg-emerald-100",
+  rejected: "text-red-600 bg-red-100",
+};
 
 export default function CandidateApplications() {
-  const { candidateId } = useOutletContext(); // ✅ Nhận từ CandidateDashboard
-  const [applications, setApplications] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // fetch applications từ supabase
-  const fetchApplications = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      if (!candidateId) {
-        setError("Không tìm thấy candidateId. Vui lòng đăng nhập lại.");
-        return;
-      }
-
-      // lấy applications kèm job title
-      const { data, error } = await supabase
-        .from("applications")
-        .select("id, status, created_at, jobs(title)")
-        .eq("candidate_id", candidateId)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-
-      setApplications(data || []);
-    } catch (err) {
-      console.error("❌ fetchApplications error:", err);
-      setError("Không thể tải danh sách ứng tuyển.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchApplications();
-  }, [candidateId]);
-
-  const statusColors = {
-    pending: "text-amber-600 bg-amber-100",
-    accepted: "text-emerald-600 bg-emerald-100",
-    rejected: "text-red-600 bg-red-100",
-  };
-
-  // ===== UI =====
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-white rounded-xl shadow-sm border p-8 text-center">
-        <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-4" />
-        <p className="text-slate-700">{error}</p>
-        <button
-          onClick={fetchApplications}
-          className="mt-3 text-orange-600 hover:underline"
-        >
-          Thử lại
-        </button>
-      </div>
-    );
-  }
+  const outletContext = useOutletContext() || {};
+  const candidateId = outletContext.candidateId ?? "demo-user";
+  const [applications] = useState(mockCandidateApplications);
 
   if (applications.length === 0) {
     return (
       <div className="bg-white rounded-xl shadow-sm border p-8 text-center">
         <Users className="w-10 h-10 text-slate-400 mx-auto mb-4" />
-        <p className="text-slate-600">Bạn chưa ứng tuyển công việc nào.</p>
+        <p className="text-slate-600">Bạn chưa ứng tuyển công việc nào trong bản demo.</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-3">
-      <h1 className="text-2xl font-bold mb-4">Đơn ứng tuyển của tôi</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Đơn ứng tuyển của tôi</h1>
+        <span className="text-xs text-slate-500">
+          Candidate ID: <strong>{candidateId}</strong>
+        </span>
+      </div>
       <ul className="space-y-3">
         {applications.map((app) => (
           <li
@@ -91,12 +38,9 @@ export default function CandidateApplications() {
             className="bg-white rounded-xl shadow-sm border p-4 flex justify-between items-center"
           >
             <div>
-              <p className="font-semibold text-slate-800">
-                {app.jobs?.title || "Công việc không xác định"}
-              </p>
+              <p className="font-semibold text-slate-800">{app.jobTitle}</p>
               <p className="text-xs text-slate-500">
-                Ngày nộp:{" "}
-                {new Date(app.created_at).toLocaleDateString("vi-VN")}
+                Ngày nộp: {new Date(app.createdAt).toLocaleDateString("vi-VN")}
               </p>
             </div>
             <span
@@ -107,7 +51,7 @@ export default function CandidateApplications() {
               {app.status === "pending"
                 ? "Đang xem xét"
                 : app.status === "accepted"
-                ? "Được chấp nhận"
+                ? "Đã chấp nhận"
                 : app.status === "rejected"
                 ? "Bị từ chối"
                 : app.status}
@@ -115,6 +59,10 @@ export default function CandidateApplications() {
           </li>
         ))}
       </ul>
+      <div className="flex items-center gap-2 text-xs text-slate-500">
+        <AlertCircle className="w-4 h-4" />
+        Đây là dữ liệu mô phỏng, không có kết nối với máy chủ.
+      </div>
     </div>
   );
 }

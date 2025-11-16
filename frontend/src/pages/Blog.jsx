@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Search, Calendar, User, TrendingUp, Users, Briefcase, Clock, ArrowRight, ChevronRight, Eye, MessageSquare, Share2, BookOpen, Star, Filter, Tag } from 'lucide-react';
 
 const BlogPost = ({ post, featured = false }) => (

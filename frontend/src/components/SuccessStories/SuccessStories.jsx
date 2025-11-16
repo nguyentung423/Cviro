@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Quote, Star, Users, Briefcase, Award } from "lucide-react";
+import Avatar from '../Avatar/Avatar';
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 const pgStories = [
   {
@@ -7,7 +9,6 @@ const pgStories = [
     name: "Ngọc Anh",
     role: "PG tại Tech Expo",
     feedback: "Cviro giúp mình tìm ca làm chỉ trong vài phút. Thanh toán nhanh chóng và cực kỳ minh bạch.",
-    image: "https://via.placeholder.com/80x80/ab3f20/FFFFFF?text=NA",
     rating: 5,
     location: "TP.HCM",
     jobCount: "12+ ca"
@@ -17,7 +18,6 @@ const pgStories = [
     name: "Thu Hà", 
     role: "Mascot tại Food Fest",
     feedback: "Ứng tuyển siêu nhanh, chỉ vài cú click là có việc. Giao diện gọn gàng, dễ dùng kể cả trên điện thoại.",
-    image: "https://via.placeholder.com/80x80/f0b33a/FFFFFF?text=TH",
     rating: 5,
     location: "Hà Nội",
     jobCount: "8+ ca"
@@ -27,7 +27,6 @@ const pgStories = [
     name: "Minh Khôi",
     role: "MC tại Auto Show",
     feedback: "Platform rất chuyên nghiệp, thông tin rõ ràng. Team support nhiệt tình, giải đáp nhanh chóng.",
-    image: "https://via.placeholder.com/80x80/536b4e/FFFFFF?text=MK",
     rating: 5,
     location: "Đà Nẵng",
     jobCount: "15+ ca"
@@ -39,8 +38,7 @@ const clientStories = [
     id: 1,
     name: "Hoàng Long",
     role: "Supervisor - Event Corp",
-    feedback: "Trước đây phải tuyển qua group rất mất thời gian. Nhờ CREWNEXT, mình quản lý nhân sự dễ dàng và tiết kiệm chi phí.",
-    image: "https://via.placeholder.com/80x80/ab3f20/FFFFFF?text=HL",
+    feedback: "Trước đây phải tuyển qua group rất mất thời gian. Nhờ Cviro, mình quản lý nhân sự dễ dàng và tiết kiệm chi phí.",
     rating: 5,
     company: "Event Corp",
     projectSize: "50+ nhân sự"
@@ -48,9 +46,8 @@ const clientStories = [
   {
     id: 2,
     name: "Mai Linh",
-    role: "Event Manager - Brand X",
+    role: "Quản lý sự kiện - Brand X",
     feedback: "Chất lượng nhân sự rất tốt, đúng yêu cầu. Hệ thống quản lý giúp theo dõi hiệu quả công việc real-time.",
-    image: "https://via.placeholder.com/80x80/f0b33a/FFFFFF?text=ML",
     rating: 5,
     company: "Brand X",
     projectSize: "30+ nhân sự"
@@ -60,7 +57,6 @@ const clientStories = [
     name: "Đức Thành",
     role: "Marketing Director - Expo Agency",
     feedback: "Cviro đã thay đổi cách chúng tôi tuyển dụng. Tiết kiệm 70% thời gian và chi phí so với trước đây.",
-    image: "https://via.placeholder.com/80x80/536b4e/FFFFFF?text=DT",
     rating: 5,
     company: "Expo Agency",
     projectSize: "100+ nhân sự"
@@ -102,10 +98,11 @@ const StoryCard = ({ story, type }) => (
     
     {/* User info */}
     <div className="flex items-center gap-4">
-      <img
-        src={story.image}
+      <Avatar 
+        name={story.name}
         alt={story.name}
-        className="w-12 h-12 rounded-full border-2 border-[#F5F5F5] object-cover"
+        size="md"
+        className="border-2 border-[#F5F5F5]"
       />
       <div className="flex-1">
         <h3 className="font-semibold text-gray-900">{story.name}</h3>
@@ -142,27 +139,28 @@ const StatCard = ({ icon: Icon, number, label, color }) => (
 
 export default function SuccessStories() {
   const [activeTab, setActiveTab] = useState('pg');
+  const isMobile = useIsMobile();
 
   const currentStories = activeTab === 'pg' ? pgStories : clientStories;
 
   return (
-    <section className="bg-[#F5F5F5] py-16" aria-label="Câu chuyện thành công">
+    <section className="bg-[#F5F5F5] py-12 md:py-16" aria-label="Câu chuyện thành công">
       <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="w-12 h-12 mx-auto mb-4 bg-[#ab3f20]/10 rounded-full flex items-center justify-center">
-            <Quote className="w-6 h-6 text-[#ab3f20]" />
+        {/* Header - mobile optimized */}
+        <div className="text-center mb-8 md:mb-12 px-4">
+          <div className="w-10 h-10 md:w-12 md:h-12 mx-auto mb-3 md:mb-4 bg-[#ab3f20]/10 rounded-full flex items-center justify-center">
+            <Quote className="w-5 h-5 md:w-6 md:h-6 text-[#ab3f20]" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-3">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 md:mb-3">
             Câu chuyện <span className="text-[#ab3f20]">thành công</span>
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm md:text-base text-gray-600 max-w-2xl mx-auto">
             Trải nghiệm thực tế từ nhân sự và đối tác đã đồng hành cùng Cviro
           </p>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-4 gap-6 mb-12 max-w-2xl mx-auto">
+        {/* Stats - mobile optimized grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12 max-w-2xl mx-auto px-4">
           <StatCard 
             icon={Users} 
             number="1000+" 
@@ -189,8 +187,8 @@ export default function SuccessStories() {
           />
         </div>
 
-        {/* Tabs */}
-        <div className="flex justify-center mb-8">
+        {/* Tabs - mobile optimized */}
+        <div className="flex justify-center mb-6 md:mb-8 px-4">
           <div className="flex space-x-1 bg-[#F5F5F5] border border-[#E0E0E0] p-1 rounded-lg">
             <TabButton
               active={activeTab === 'pg'}
@@ -209,8 +207,8 @@ export default function SuccessStories() {
           </div>
         </div>
 
-        {/* Stories Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Stories Grid - mobile-first */}
+        <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-4">
           {currentStories.map((story) => (
             <StoryCard 
               key={story.id} 

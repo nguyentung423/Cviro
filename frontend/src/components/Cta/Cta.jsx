@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ArrowRight, Users, Briefcase, CheckCircle, Star, Clock, Shield } from 'lucide-react';
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 const benefits = [
   {
@@ -26,7 +27,7 @@ const stats = [
 ];
 
 const UserTypeCard = ({ icon: Icon, title, description, benefits, buttonText, buttonStyle, isPopular }) => (
-  <div className={`relative bg-white/10 backdrop-blur-sm rounded-2xl p-6 border transition-all duration-300 hover:bg-white/20 hover:scale-105 ${
+  <div className={`relative bg-white/10 backdrop-blur-sm rounded-2xl p-6 border transition-all duration-300 hover:bg-white/20 hover:scale-105 flex flex-col ${
     isPopular ? 'border-white border-2 shadow-2xl' : 'border-white/30'
   }`}>
     {isPopular && (
@@ -45,10 +46,10 @@ const UserTypeCard = ({ icon: Icon, title, description, benefits, buttonText, bu
       <p className="text-white/80">{description}</p>
     </div>
     
-    <div className="space-y-3 mb-6">
+    <div className="space-y-3 mb-6 flex-grow">
       {benefits.map((benefit, index) => (
-        <div key={index} className="flex items-center gap-3 text-white/90">
-          <CheckCircle className="w-5 h-5 text-[#f0b33a] flex-shrink-0" />
+        <div key={index} className="flex items-start gap-3 text-white/90">
+          <CheckCircle className="w-5 h-5 text-[#f0b33a] flex-shrink-0 mt-0.5" />
           <span className="text-sm">{benefit}</span>
         </div>
       ))}
@@ -63,15 +64,18 @@ const UserTypeCard = ({ icon: Icon, title, description, benefits, buttonText, bu
 
 export default function Cta() {
   const [activeTab, setActiveTab] = useState('all');
+  const isMobile = useIsMobile();
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[#ab3f20] via-[#ab3f20] to-[#536b4e] py-20">
-      {/* Animated background elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-[#f0b33a]/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-white/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#536b4e]/30 rounded-full blur-3xl animate-pulse delay-500"></div>
-      </div>
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#ab3f20] via-[#ab3f20] to-[#536b4e] py-12 md:py-20">
+      {/* Animated background elements - disabled on mobile */}
+      {!isMobile && (
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-[#f0b33a]/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-white/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#536b4e]/30 rounded-full blur-3xl animate-pulse delay-500"></div>
+        </div>
+      )}
       
       {/* Grid pattern overlay */}
       <div className="absolute inset-0 opacity-10" style={{
@@ -80,20 +84,20 @@ export default function Cta() {
       }}></div>
 
       <div className="container relative z-10 mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+        {/* Header - mobile optimized */}
+        <div className="text-center mb-8 md:mb-12 px-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 md:mb-4">
             Sẵn sàng{' '}
             <span className="bg-gradient-to-r from-[#f0b33a] to-white bg-clip-text text-transparent">
               thay đổi cuộc chơi?
             </span>
           </h2>
-          <p className="text-xl text-white/90 max-w-3xl mx-auto mb-8">
+          <p className="text-base md:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto mb-6 md:mb-8">
             Tham gia Cviro - nền tảng kết nối nhân sự sự kiện hàng đầu Việt Nam
           </p>
           
-          {/* Quick stats */}
-          <div className="flex justify-center gap-8 mb-8">
+          {/* Quick stats - mobile friendly */}
+          <div className="flex flex-wrap justify-center gap-4 md:gap-8 mb-6 md:mb-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="text-2xl font-bold text-[#f0b33a]">{stat.number}</div>
@@ -103,8 +107,8 @@ export default function Cta() {
           </div>
         </div>
 
-        {/* Benefits */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        {/* Benefits - mobile optimized */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12 px-4">
           {benefits.map((benefit, index) => (
             <div key={index} className="text-center">
               <div className="w-12 h-12 mx-auto mb-3 bg-white/20 rounded-full flex items-center justify-center">
@@ -116,8 +120,8 @@ export default function Cta() {
           ))}
         </div>
 
-        {/* User type cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
+        {/* User type cards - mobile-first */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto mb-8 md:mb-12 px-4">
           <UserTypeCard
             icon={Users}
             title="Dành cho Nhân sự"
@@ -148,14 +152,14 @@ export default function Cta() {
           />
         </div>
 
-        {/* Final CTA */}
-        <div className="text-center">
-          <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
-            <div className="text-left">
+        {/* Final CTA - mobile optimized */}
+        <div className="text-center px-4">
+          <div className="inline-flex flex-col md:flex-row items-center gap-3 md:gap-4 bg-white/10 backdrop-blur-sm rounded-2xl p-4 md:p-6 border border-white/30">
+            <div className="text-center md:text-left">
               <p className="text-white font-medium mb-1">Bắt đầu ngay hôm nay</p>
               <p className="text-white/70 text-sm">Miễn phí đăng ký • Không ràng buộc</p>
             </div>
-            <button className="bg-[#f0b33a] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#f0b33a]/90 transition-all duration-300 flex items-center gap-2 whitespace-nowrap">
+            <button className="bg-[#f0b33a] text-white px-6 md:px-8 py-3 rounded-xl font-semibold hover:bg-[#f0b33a]/90 transition-all duration-300 flex items-center gap-2 whitespace-nowrap will-change-transform">
               Tham gia ngay
               <ArrowRight className="w-4 h-4" />
             </button>

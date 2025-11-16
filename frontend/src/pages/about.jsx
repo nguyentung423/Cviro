@@ -1,183 +1,9 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
-  ChevronDown, Users, Target, Heart, Lightbulb, Rocket, HandHeart, Sprout,
-  Play, Pause, Volume2, VolumeX, Globe, Award, Zap, Star, ArrowRight,
-  Sparkles, Eye, TrendingUp, Shield, Clock, ChevronLeft, ChevronRight
+  Play, Globe, ArrowRight, Sparkles, Eye, TrendingUp, Shield, 
+  ChevronLeft, ChevronRight, Zap, Star, Users, Target, Heart, Award, Clock
 } from 'lucide-react';
-
-// Enhanced Data Configuration
-const aboutData = {
-  hero: {
-    title: "Kết nối nhân sự sự kiện với",
-    titleHighlight: "các agency uy tín",
-    subtitle: "Nhanh chóng • Minh bạch • Hiệu quả",
-    description:
-      "Cviro là nền tảng tuyển dụng chuyên biệt cho ngành Event, nơi PG, PB, MC, Sup và nhân sự sự kiện dễ dàng kết nối với hàng trăm agency hàng đầu – nhanh gọn, rõ ràng và đáng tin cậy.",
-    videoUrl: "/videos/hero-video.mp4",
-    achievements: ["Kết nối 5,000+ job", "Hơn 300 agency", "12,000+ ứng viên"]
-  },
-
-  realTimeStats: [
-    { number: "5000", label: "Ca làm đã đăng", icon: Target, trend: "+12%", live: true },
-    { number: "300", label: "Agency tin dùng", icon: Users, trend: "+8%", live: true },
-    { number: "12000", label: "Ứng viên tham gia", icon: Heart, trend: "+23%", live: true },
-  ],
-
-  achievements: [
-    { title: "Nền tảng sự kiện hàng đầu", org: "Event Awards 2024", icon: Award },
-    { title: "Giải pháp tuyển dụng sáng tạo", org: "Tech Summit", icon: Zap },
-    { title: "Được tin dùng bởi", org: "HR Excellence", icon: Star },
-  ],
-
-  mission: {
-    title: "Sứ mệnh",
-    mainTitle: "Kết nối nhân sự,",
-    mainTitleHighlight: "nâng tầm sự kiện",
-    description:
-      "Mỗi sự kiện đều cần nhân sự phù hợp. Cviro giúp agency tìm đúng người – đúng việc, đồng thời tạo ra cơ hội việc làm minh bạch, an toàn cho ứng viên.",
-    quote:
-      "Sứ mệnh của chúng tôi là trở thành cầu nối tin cậy, phát triển cộng đồng nhân sự sự kiện chuyên nghiệp tại Việt Nam và vươn tầm khu vực.",
-    founder: {
-      name: "Nguyễn Hoàng Tùng",
-      position: "Founder",
-      image: "/t.jpg",
-      linkedin: "https://linkedin.com/in/tungnguyenhoang",
-      credentials: "Trường Đại học Công Nghệ - ĐHQGHN"
-    },
-    metrics: [
-      { label: "Tỷ lệ matching thành công", value: "98.5%" },
-      { label: "Thời gian kết nối", value: "< 2 phút" },
-      { label: "Độ hài lòng", value: "4.9/5" }
-    ]
-  },
-
-  values: {
-    title: "Giá trị cốt lõi",
-    mainTitle: "Đội ngũ trẻ trung,",
-    mainTitleHighlight: "nhiệt huyết & tận tâm",
-    description:
-      "Chúng tôi là tập thể trẻ trung, am hiểu ngành Event, luôn đổi mới để mang lại trải nghiệm tốt nhất cho cả ứng viên và agency.",
-    items: [
-      {
-        title: "Tận tâm",
-        description:
-          "Cam kết mang đến trải nghiệm minh bạch, hỗ trợ ứng viên và agency mọi lúc.",
-        icon: HandHeart,
-        color: "from-orange-700 to-orange-600",
-        metrics: "Hỗ trợ 24/7"
-      },
-      {
-        title: "Phát triển",
-        description:
-          "Không ngừng cải tiến nền tảng, giúp ứng viên có thêm nhiều cơ hội việc làm.",
-        icon: Rocket,
-        color: "from-orange-600 to-orange-500",
-        metrics: "5,000+ job"
-      },
-      {
-        title: "Đổi mới",
-        description:
-          "Ứng dụng công nghệ hiện đại để đơn giản hóa tuyển dụng sự kiện.",
-        icon: Lightbulb,
-        color: "from-green-700 to-green-600",
-        metrics: "Smart Matching"
-      },
-      {
-        title: "Hợp tác",
-        description:
-          "Xây dựng cộng đồng gắn kết giữa nhân sự và agency, phát triển bền vững.",
-        icon: Sprout,
-        color: "from-green-600 to-green-500",
-        metrics: "Community"
-      },
-    ],
-  },
-
-  team: {
-    title: "Đội ngũ",
-    mainTitle: "Trải nghiệm chuyên nghiệp cùng",
-    mainTitleHighlight: "đội ngũ Cviro",
-    description:
-      "Cviro được xây dựng bởi những người trẻ am hiểu ngành Event & Công nghệ. Chúng tôi luôn sẵn sàng đồng hành để mang lại trải nghiệm tuyển dụng tốt nhất.",
-    members: [
-      {
-        name: "Nguyễn Kim Thư",
-        position: "Brand Manager",
-        image: "/th.png",
-        bio: "Trường Đại học Giáo Dục - ĐHQGHN",
-        skills: ["Brand Strategy", "Digital Marketing", "UX/UI"],
-        linkedin: "https://www.facebook.com/nguyen.thu.367533",
-        status: "online"
-      },
-      {
-        name: "Bảo Nhật",
-        position: "AI Developer",
-        image: "/nhat.png",
-        bio: "Trường Đại học Văn Lang",
-        skills: ["Machine Learning", "Deep Learning", "Python"],
-        linkedin: "https://www.linkedin.com/in/chrisnguyenx05/",
-        status: "online"
-      },
-      {
-        name: "Võ Thành Nhân",
-        position: "Finance Manager",
-        image: "/n.png",
-        bio: "Đại học Kinh Tế TP.HCM",
-        skills: ["Financial Analysis", "Investment", "Strategy"],
-        linkedin: "https://www.facebook.com/profile.php?id=100041105261085&mibextid=ZbWKwL",
-        status: "online"
-      },
-      {
-        name: "Hà Hải Yến",
-        position: "Business Development Manager",
-        image: "/khang.png",
-        bio: "Đại học Kinh Tế Quốc Dân",
-        skills: ["Business Strategy", "Partnership", "Market Analysis"],
-        linkedin: "https://www.facebook.com/hai.yen.206178/",
-        status: "online"
-      },
-      {
-        name: "Phạm Quang Minh",
-        position: "Back-End Developer",
-        image: "/m.jpg",
-        bio: "Đại học Phenikaa",
-        skills: ["Node.js", "REST API", "MongoDB"],
-        linkedin: "",
-        status: "online"
-      },
-      {
-        name: "Coming soon",
-        position: "Coming soon",
-        image: "/mai.png",
-        bio: "Coming soon",
-        skills: ["Talent Acquisition", "Employee Relations", "HR Analytics"],
-        linkedin: "https://linkedin.com/in/lethimai",
-        status: "online"
-      },
-    ],
-  },
-
-  testimonials: [
-    {
-      quote:
-        "Cviro đã giúp chúng tôi tuyển dụng PG/PB nhanh chóng, minh bạch và cực kỳ tiện lợi.",
-      author: "Nguyễn Thắng",
-      position: "Event Director, Shine Invest",
-      avatar: "/images/testimonial-1.jpg",
-      company: "Galaxy Events",
-      rating: 5
-    },
-    {
-      quote:
-        "Nhờ Cviro, chúng tôi tìm được đúng nhân sự cho các activation lớn chỉ trong vài phút.",
-      author: "Tố Nguyên",
-      position: "CEO, Premium Productions",
-      avatar: "/images/testimonial-2.jpg",
-      company: "Premium Productions",
-      rating: 5
-    }
-  ]
-};
+import { aboutData } from '../data/aboutData';
 
 // Advanced Hooks
 const useParallax = () => {
@@ -248,109 +74,9 @@ const useIntersectionObserver = (options = {}) => {
   return [setRef, isVisible];
 };
 
-// Floating Elements Component
-const FloatingElements = () => (
-  <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden">
-    {[...Array(20)].map((_, i) => (
-      <div
-        key={i}
-        className="absolute w-1 h-1 bg-gradient-to-r from-orange-600 to-orange-500 rounded-full opacity-30"
-        style={{
-          left: `${Math.random() * 100}%`,
-          top: `${Math.random() * 100}%`,
-          animation: `float ${3 + Math.random() * 4}s ease-in-out infinite`,
-          animationDelay: `${Math.random() * 5}s`
-        }}
-      />
-    ))}
-    <style>{`
-      @keyframes float {
-        0%, 100% { transform: translateY(0px) rotate(0deg); }
-        50% { transform: translateY(-20px) rotate(180deg); }
-      }
-    `}</style>
-  </div>
-);
 
-// Video Player Component
-const VideoPlayer = ({ videoUrl, className = "" }) => {
-  const videoRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const [progress, setProgress] = useState(0);
 
-  const togglePlay = useCallback(() => {
-    if (!videoRef.current) return;
-    
-    if (isPlaying) {
-      videoRef.current.pause();
-    } else {
-      videoRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
-  }, [isPlaying]);
 
-  const toggleMute = useCallback(() => {
-    if (!videoRef.current) return;
-    videoRef.current.muted = !isMuted;
-    setIsMuted(!isMuted);
-  }, [isMuted]);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const updateProgress = () => {
-      const progress = (video.currentTime / video.duration) * 100;
-      setProgress(progress);
-    };
-
-    video.addEventListener('timeupdate', updateProgress);
-    return () => video.removeEventListener('timeupdate', updateProgress);
-  }, []);
-
-  return (
-    <div className={`relative group ${className}`}>
-      <video
-        ref={videoRef}
-        className="w-full h-full object-cover"
-        muted={isMuted}
-        loop
-        playsInline
-      >
-        <source src={videoUrl} type="video/mp4" />
-      </video>
-      
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <div className="absolute bottom-4 left-4 right-4">
-          <div className="flex items-center gap-4 text-white">
-            <button onClick={togglePlay} className="p-2 hover:bg-white/20 rounded-full transition-colors">
-              {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
-            </button>
-            <button onClick={toggleMute} className="p-2 hover:bg-white/20 rounded-full transition-colors">
-              {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
-            </button>
-            <div className="flex-1 h-1 bg-white/30 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-orange-600 to-orange-500 transition-all duration-150"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <button 
-          onClick={togglePlay}
-          className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300"
-        >
-          {isPlaying ? <Pause className="w-8 h-8 text-white" /> : <Play className="w-8 h-8 text-white ml-1" />}
-        </button>
-      </div>
-    </div>
-  );
-};
 
 // Hero Section
 const HeroSection = ({ hero }) => {
@@ -366,34 +92,31 @@ const HeroSection = ({ hero }) => {
   }, [hero.achievements.length]);
 
   return (
-    <>
-      <FloatingElements />
-      
-      <div ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-600/10 via-orange-500/5 to-green-600/10"></div>
-          <div 
-            className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(194,108,65,0.1)_0%,transparent_50%)] transform"
-            style={{ transform: `translateY(${scrollY * 0.3}px)` }}
-          ></div>
+    <div ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-600/10 via-orange-500/5 to-green-600/10"></div>
+        <div 
+          className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(194,108,65,0.1)_0%,transparent_50%)] transform"
+          style={{ transform: `translateY(${scrollY * 0.3}px)` }}
+        ></div>
+      </div>
+
+      <div className="relative z-10 text-center px-4 max-w-6xl mx-auto">
+        <div className={`inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full mb-8 transform transition-all duration-1000 ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+        }`}>
+          <Sparkles className="w-5 h-5 text-orange-500" />
+          <span className="text-sm font-medium text-gray-700">
+            {hero.achievements[currentAchievement]}
+          </span>
         </div>
 
-        <div className="relative z-10 text-center px-4 max-w-6xl mx-auto">
-          <div className={`inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full mb-8 transform transition-all duration-1000 ${
-            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-          }`}>
-            <Sparkles className="w-5 h-5 text-orange-500" />
-            <span className="text-sm font-medium text-gray-700">
-              {hero.achievements[currentAchievement]}
-            </span>
-          </div>
-
-          <div 
-            className={`transform transition-all duration-1000 delay-300 ${
-              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
-            }`}
-            style={{ transform: `translateY(${scrollY * 0.1}px)` }}
-          >
+        <div 
+          className={`transform transition-all duration-1000 delay-300 ${
+            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
+          }`}
+          style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+        >
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-black mb-6 text-gray-900 leading-none tracking-tight">
               {hero.title}{' '}
               <span className="relative inline-block">
@@ -407,14 +130,14 @@ const HeroSection = ({ hero }) => {
               {hero.subtitle}
             </p>
 
-            <p className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-4xl mx-auto mb-12">
-              {hero.description}
-            </p>
-          </div>
+          <p className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-4xl mx-auto mb-12">
+            {hero.description}
+          </p>
+        </div>
 
-          <div className={`flex flex-col md:flex-row gap-6 justify-center items-center transform transition-all duration-1000 delay-600 ${
-            isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
-          }`}>
+        <div className={`flex flex-col md:flex-row gap-6 justify-center items-center transform transition-all duration-1000 delay-600 ${
+          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
+        }`}>
             <button className="group relative px-12 py-6 bg-gradient-to-r from-orange-700 to-orange-600 text-white font-bold text-lg rounded-2xl hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-orange-600/25">
               <span className="relative z-10 flex items-center gap-3">
                 Khám phá ngay
@@ -422,18 +145,15 @@ const HeroSection = ({ hero }) => {
               </span>
             </button>
             
-            <button className="px-8 py-6 border-2 border-gray-300 text-gray-700 font-semibold text-lg rounded-2xl hover:border-orange-600 hover:text-orange-700 transition-all duration-300 backdrop-blur-md bg-white/80">
-              <Play className="w-5 h-5 inline mr-2" />
-              Xem demo
-            </button>
-          </div>
+          <button className="px-8 py-6 border-2 border-gray-300 text-gray-700 font-semibold text-lg rounded-2xl hover:border-orange-600 hover:text-orange-700 transition-all duration-300 backdrop-blur-md bg-white/80">
+            <Play className="w-5 h-5 inline mr-2" />
+            Xem demo
+          </button>
         </div>
       </div>
-    </>
+    </div>
   );
-};
-
-// Real Time Stats Section
+};// Real Time Stats Section
 const RealTimeStatsSection = ({ stats }) => {
   const [ref, isVisible] = useIntersectionObserver();
   
@@ -563,11 +283,11 @@ const InteractiveVideoSection = () => {
         <div className={`transform transition-all duration-1000 delay-500 ${
           isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
         }`}>
-          <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl">
-            <VideoPlayer 
-              videoUrl="/videos/platform-demo.mp4" 
-              className="w-full h-full"
-            />
+          <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl bg-gray-900 flex items-center justify-center">
+            <div className="text-center text-white p-8">
+              <Play className="w-16 h-16 mx-auto mb-4 opacity-50" />
+              <p className="text-lg opacity-75">Video sẽ được cập nhật sớm</p>
+            </div>
           </div>
         </div>
       </div>
@@ -1039,22 +759,6 @@ const TestimonialsSection = ({ testimonials }) => {
 export default function AboutPage() {
   useEffect(() => {
     document.documentElement.style.scrollBehavior = 'smooth';
-    
-    const criticalImages = [
-      '/t.jpg',
-      '/th.png', 
-      '/nhat.png',
-      '/n.png',
-      '/khang.png',
-      '/khoa.png',
-      '/mai.png'
-    ];
-    
-    criticalImages.forEach(src => {
-      const img = new Image();
-      img.src = src;
-    });
-
     return () => {
       document.documentElement.style.scrollBehavior = 'auto';
     };

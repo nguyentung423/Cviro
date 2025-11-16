@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 // Separate data for agencies and brands
 const agencies = [

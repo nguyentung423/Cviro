@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
-// HERO SECTION — CREWNEXT PREMIUM UPGRADE
-// Enhanced with modern animations, glass morphism, and interactive elements
+// HERO SECTION — MOBILE OPTIMIZED
+// Aggressive mobile optimization: reduced particles, disabled parallax, optimized animations
 
 export default function Hero() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [hoveredCard, setHoveredCard] = useState(null);
+  const isMobile = useIsMobile();
+  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
   const [currentShift, setCurrentShift] = useState(0);
 
-  // Interactive mouse tracking for parallax effect
+  // Interactive mouse tracking - DISABLED on mobile
   useEffect(() => {
+    if (isMobile) return;
+
     const handleMouseMove = (e) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
@@ -18,11 +21,11 @@ export default function Hero() {
       });
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [isMobile]);
 
-  // Auto-rotating shifts
+  // Auto-rotating shifts - DISABLED on mobile for performance
   const hotShifts = [
     { role: "PG Booth", time: "14:00–22:00", pay: "450k", location: "Times City", date: "14/09" },
     { role: "MC Event", time: "18:00–23:00", pay: "800k", location: "Vincom Center", date: "15/09" },
@@ -30,47 +33,36 @@ export default function Hero() {
   ];
 
   useEffect(() => {
+    if (isMobile) return;
     const interval = setInterval(() => {
       setCurrentShift((prev) => (prev + 1) % hotShifts.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isMobile]);
 
   return (
     <section
       className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#ffffff] via-[#f8f9fa] to-[#f5f5f5]"
-      aria-label="CREWNEXT hero section"
+      aria-label="Cviro hero section"
     >
-      {/* Advanced Background Layers */}
+      {/* Optimized Background Layers */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        {/* Animated gradient mesh */}
-        <div 
-          className="absolute inset-0 opacity-30"
-          style={{
-            background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, #f0b33a15 0%, transparent 50%), 
-                        radial-gradient(circle at ${100 - mousePosition.x}% ${100 - mousePosition.y}%, #ab3f2015 0%, transparent 50%)`
-          }}
-        />
+        {/* Animated gradient mesh - disabled on mobile */}
+        {!isMobile && (
+          <div 
+            className="absolute inset-0 opacity-30 will-change-auto"
+            style={{
+              background: `radial-gradient(circle at ${mousePosition.x}% ${mousePosition.y}%, #f0b33a15 0%, transparent 50%), 
+                          radial-gradient(circle at ${100 - mousePosition.x}% ${100 - mousePosition.y}%, #ab3f2015 0%, transparent 50%)`
+            }}
+          />
+        )}
         
-        {/* Enhanced grid with animation */}
-        <div className="absolute inset-0 bg-[radial-gradient(#e0e0e0_1px,transparent_1px)] [background-size:20px_20px] opacity-40 animate-pulse" />
+        {/* Static grid - no animation on mobile */}
+        <div className={`absolute inset-0 bg-[radial-gradient(#e0e0e0_1px,transparent_1px)] [background-size:20px_20px] opacity-40 ${isMobile ? '' : 'animate-pulse'}`} />
         
-        {/* Dynamic floating orbs with glassmorphism */}
-        <div 
-          className="absolute -right-32 -top-32 h-96 w-96 rounded-full border border-[#f0b33a]/30 bg-gradient-to-r from-[#f0b33a]/10 to-transparent backdrop-blur-3xl animate-bounce"
-          style={{ animationDuration: '6s', animationDelay: '0s' }}
-        />
-        <div 
-          className="absolute -right-16 top-20 h-80 w-80 rounded-full border border-[#ab3f20]/20 bg-gradient-to-l from-[#ab3f20]/10 to-transparent backdrop-blur-3xl animate-bounce"
-          style={{ animationDuration: '8s', animationDelay: '2s' }}
-        />
-        <div 
-          className="absolute right-32 -top-16 h-64 w-64 rounded-full border border-[#536b4e]/25 bg-gradient-to-br from-[#536b4e]/10 to-transparent backdrop-blur-3xl animate-bounce"
-          style={{ animationDuration: '7s', animationDelay: '4s' }}
-        />
-        
-        {/* Floating particles */}
-        {[...Array(12)].map((_, i) => (
+        {/* Floating particles - 4 on mobile, 8 on desktop */}
+        {[...Array(isMobile ? 4 : 8)].map((_, i) => (
           <div
             key={i}
             className="absolute animate-float"
@@ -97,18 +89,26 @@ export default function Hero() {
             <div className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-[#e0e0e0]/50 bg-white/60 px-4 py-2 text-sm font-medium text-[#536b4e] shadow-lg backdrop-blur-md transition-all hover:scale-105 hover:shadow-xl">
               <div className="absolute inset-0 bg-gradient-to-r from-[#ab3f20]/10 to-[#f0b33a]/10 opacity-0 transition-opacity group-hover:opacity-100" />
               <span className="relative inline-block h-2 w-2 rounded-full bg-[#ab3f20] animate-pulse" />
-              <span className="relative z-10">Kết nối Brand • Agency • Nhân sự</span>
+              <span className="relative z-10">Hơn 5000+ việc làm mỗi tháng</span>
             </div>
 
-            {/* Hero headline with advanced typography */}
-            <div className="space-y-4">
-              <h1 className="text-4xl font-black leading-tight text-[#333333] sm:text-5xl lg:text-6xl xl:text-7xl">
-                <span className="block animate-slideInUp">Nền tảng tuyển dụng sự kiện</span>
+            {/* Hero headline - mobile optimized */}
+            <div className="space-y-3 md:space-y-4">
+              <h1 className="text-3xl font-black leading-tight text-[#333333] sm:text-4xl md:text-5xl lg:text-6xl will-change-transform">
+                <span className="block animate-slideInUp">Kết nối nhân sự sự kiện</span>
                 
                 <span className="relative block animate-slideInUp" style={{ animationDelay: '0.2s' }}>
-                  <span className="relative inline-block">
+                  <span className="relative inline-flex items-center gap-3 md:gap-4">
                     <span className="relative z-10 bg-gradient-to-r from-[#ab3f20] via-[#f0b33a] to-[#ab3f20] bg-clip-text text-transparent bg-size-200 animate-gradientShift">
-                      nhanh, chuẩn, đáng tin cậy
+                      Nhanh
+                    </span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#f0b33a] to-[#ab3f20]"></span>
+                    <span className="relative z-10 bg-gradient-to-r from-[#ab3f20] via-[#f0b33a] to-[#ab3f20] bg-clip-text text-transparent bg-size-200 animate-gradientShift">
+                      Chuẩn
+                    </span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#f0b33a] to-[#ab3f20]"></span>
+                    <span className="relative z-10 bg-gradient-to-r from-[#ab3f20] via-[#f0b33a] to-[#ab3f20] bg-clip-text text-transparent bg-size-200 animate-gradientShift">
+                      Uy tín
                     </span>
                     {/* Animated underline */}
                     <span className="absolute -bottom-5 left-0 h-2 w-0 rounded-full bg-gradient-to-r from-[#f0b33a] to-[#ab3f20] animate-expandWidth" />
@@ -117,22 +117,19 @@ export default function Hero() {
               </h1>
             </div>
 
-            <p className="max-w-2xl text-lg leading-relaxed text-[#333333]/75 sm:text-xl animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
-              Cviro giúp bạn tìm ca làm, quản lý nhân sự, và kết nối đối tác trong vài phút.
-              <span className="block mt-2 font-semibold text-[#536b4e]">
-                
-              </span>
+            <p className="max-w-2xl text-base leading-relaxed text-[#333333]/75 sm:text-lg md:text-xl animate-fadeInUp" style={{ animationDelay: '0.3s' }}>
+              Tìm việc, quản lý nhân sự và kết nối đối tác - Tất cả trong vài phút
             </p>
 
-            {/* Enhanced CTAs with micro-interactions */}
+            {/* CTAs - mobile optimized */}
             <div
-  className="flex flex-col gap-4 sm:flex-row animate-fadeInUp"
+  className="flex flex-col gap-3 sm:gap-4 sm:flex-row animate-fadeInUp"
   style={{ animationDelay: "0.4s" }}
 >
   {/* ✅ Tìm việc ngay → LoginCandidate */}
   <Link
     to="/login/candidate"
-    className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#ab3f20] to-[#ab3f20]/90 px-8 py-4 text-lg font-bold text-white shadow-2xl shadow-[#ab3f20]/30 transition-all hover:scale-105 hover:shadow-[#ab3f20]/40 active:scale-95"
+    className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#ab3f20] to-[#ab3f20]/90 px-6 py-3 md:px-8 md:py-4 text-base md:text-lg font-bold text-white shadow-2xl shadow-[#ab3f20]/30 transition-all hover:scale-105 hover:shadow-[#ab3f20]/40 active:scale-95 will-change-transform"
   >
     <span className="absolute inset-0 bg-gradient-to-r from-[#f0b33a] to-[#ab3f20] opacity-0 transition-opacity group-hover:opacity-20" />
     <span className="relative z-10">Tìm việc ngay</span>
@@ -144,15 +141,15 @@ export default function Hero() {
   {/* ✅ Đăng ký đối tác → LoginAgency */}
   <Link
     to="/login/agency"
-    className="group relative overflow-hidden rounded-2xl border-2 border-[#e0e0e0] bg-white/80 px-8 py-4 text-lg font-bold text-[#333333] backdrop-blur-md transition-all hover:border-[#536b4e] hover:scale-105 hover:bg-white hover:text-[#536b4e] hover:shadow-xl active:scale-95"
+    className="group relative overflow-hidden rounded-2xl border-2 border-[#e0e0e0] bg-white/80 px-6 py-3 md:px-8 md:py-4 text-base md:text-lg font-bold text-[#333333] backdrop-blur-md transition-all hover:border-[#536b4e] hover:scale-105 hover:bg-white hover:text-[#536b4e] hover:shadow-xl active:scale-95 will-change-transform"
   >
     <span className="absolute inset-0 bg-gradient-to-r from-[#536b4e]/10 to-[#f0b33a]/10 opacity-0 transition-opacity group-hover:opacity-100" />
     <span className="relative z-10">Tuyển dụng ngay</span>
   </Link>
 </div>
 
-            {/* Enhanced social proof with counters */}
-            <div className="flex flex-wrap items-center gap-6 animate-fadeInUp" style={{ animationDelay: '0.5s' }}>
+            {/* Social proof - mobile optimized */}
+            <div className="flex flex-wrap items-center gap-3 md:gap-6 animate-fadeInUp" style={{ animationDelay: '0.5s' }}>
               <div className="group flex items-center gap-3 rounded-2xl bg-gradient-to-r from-[#f5f5f5] to-white/80 px-4 py-3 shadow-lg backdrop-blur-sm transition-all hover:scale-105">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#536b4e] shadow-lg">
                   <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
@@ -175,13 +172,13 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* RIGHT: Premium Visual Mock */}
+          {/* RIGHT: Premium Visual - simplified on mobile */}
           <div className="relative z-10 animate-fadeInUp" style={{ animationDelay: '0.6s' }}>
             <div className="mx-auto w-full max-w-md">
               {/* Premium phone frame with glass morphism */}
-              <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-white/40 p-6 shadow-2xl backdrop-blur-xl">
-                {/* Enhanced top bar */}
-                <div className="mb-6 flex items-center justify-between">
+              <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-white/40 p-4 md:p-6 shadow-2xl backdrop-blur-xl">
+                {/* Enhanced top bar - hidden on mobile */}
+                <div className="mb-4 md:mb-6 hidden md:flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="h-3 w-3 rounded-full bg-[#ab3f20] animate-pulse" />
                     <div className="h-3 w-3 rounded-full bg-[#f0b33a] animate-pulse" style={{ animationDelay: '0.5s' }} />
@@ -192,10 +189,10 @@ export default function Hero() {
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  {/* Dynamic hot shift card */}
+                <div className="space-y-3 md:space-y-4">
+                  {/* Dynamic hot shift card - always visible */}
                   <div 
-                    className="group relative overflow-hidden rounded-3xl border border-white/30 bg-gradient-to-br from-white/60 to-white/40 p-5 shadow-xl backdrop-blur-md transition-all hover:scale-[1.02] hover:shadow-2xl"
+                    className="group relative overflow-hidden rounded-3xl border border-white/30 bg-gradient-to-br from-white/60 to-white/40 p-4 md:p-5 shadow-xl backdrop-blur-md transition-all hover:scale-[1.02] hover:shadow-2xl"
                     onMouseEnter={() => setHoveredCard('hot')}
                     onMouseLeave={() => setHoveredCard(null)}
                   >
@@ -203,26 +200,26 @@ export default function Hero() {
                     
                     <div className="relative z-10">
                       <div className="mb-3 flex items-center justify-between">
-                        <span className="text-base font-bold text-[#333333]">🔥 Hot Shift</span>
-                        <span className="animate-bounce rounded-full bg-[#536b4e]/20 px-3 py-1 text-xs font-medium text-[#536b4e]">
+                        <span className="text-sm md:text-base font-bold text-[#333333]">🔥 Hot Shift</span>
+                        <span className="animate-bounce rounded-full bg-[#536b4e]/20 px-2 md:px-3 py-1 text-xs font-medium text-[#536b4e]">
                           Hà Nội
                         </span>
                       </div>
                       
                       <div className="space-y-2">
-                        <p className="text-lg font-semibold text-[#333333]">
+                        <p className="text-base md:text-lg font-semibold text-[#333333]">
                           {hotShifts[currentShift].role}
                         </p>
-                        <p className="text-sm text-[#333333]/80">
+                        <p className="text-xs md:text-sm text-[#333333]/80">
                           {hotShifts[currentShift].time} • <span className="font-bold text-[#ab3f20]">{hotShifts[currentShift].pay}</span>
                         </p>
                       </div>
                       
                       <div className="mt-4 flex items-center justify-between">
-                        <span className="text-xs text-[#333333]/60">
+                        <span className="text-xs text-[#333333]/60 truncate">
                           {hotShifts[currentShift].location}, {hotShifts[currentShift].date}
                         </span>
-                        <Link to="/login/candidate" className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-[#ab3f20] to-[#ab3f20]/90 px-4 py-2 text-sm font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95">
+                        <Link to="/login/candidate" className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-[#ab3f20] to-[#ab3f20]/90 px-3 md:px-4 py-2 text-xs md:text-sm font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95">
                           <span className="absolute inset-0 bg-white/20 opacity-0 transition-opacity group-hover:opacity-100" />
                           <span className="relative">Ứng tuyển</span>
                         </Link>
@@ -230,8 +227,8 @@ export default function Hero() {
                     </div>
                   </div>
 
-                  {/* Enhanced upcoming events */}
-                  <div className="overflow-hidden rounded-3xl border border-white/30 bg-gradient-to-br from-white/70 to-white/50 p-5 shadow-xl backdrop-blur-md">
+                  {/* Enhanced upcoming events - desktop only */}
+                  <div className="hidden lg:block overflow-hidden rounded-3xl border border-white/30 bg-gradient-to-br from-white/70 to-white/50 p-5 shadow-xl backdrop-blur-md">
                     <div className="mb-4 flex items-center justify-between">
                       <span className="text-base font-bold text-[#333333]">📅 Sự kiện sắp tới</span>
                       <span className="text-xs text-[#333333]/60">Tuần này</span>
@@ -267,8 +264,8 @@ export default function Hero() {
                     </div>
                   </div>
 
-                  {/* Interactive role picker */}
-                  <div className="rounded-3xl border border-white/30 bg-gradient-to-br from-white/70 to-white/50 p-4 shadow-xl backdrop-blur-md">
+                  {/* Interactive role picker - desktop only */}
+                  <div className="hidden lg:block rounded-3xl border border-white/30 bg-gradient-to-br from-white/70 to-white/50 p-4 shadow-xl backdrop-blur-md">
                     <div className="mb-3 text-base font-bold text-[#333333]">🎯 Vai trò phổ biến</div>
                     <div className="flex flex-wrap gap-2">
                       {["PG/PB", "Mascot", "MC/Host", "Supervisor", "Kỹ thuật âm thanh"].map((role, i) => (

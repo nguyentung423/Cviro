@@ -1,4 +1,3 @@
-import React from 'react';
 import logo from "../../assets/logo.png";
 
 import { 
@@ -18,26 +17,26 @@ import {
 } from 'lucide-react';
 
 const quickLinks = [
-  { name: "Tìm việc", href: "/jobs", popular: true },
+  { name: "Tìm việc", href: "/candidate/jobs", popular: true },
   { name: "Đăng ký nhân sự", href: "/signup", popular: true },
-  { name: "Đăng tuyển", href: "/post-job" },
+  { name: "Đăng tuyển", href: "/agency", note: "coming-soon" },
   { name: "Về chúng tôi", href: "/about" },
-  { name: "Liên hệ", href: "/contact" }
+  { name: "Liên hệ", href: "#contact", note: "coming-soon" }
 ];
 
 const supportLinks = [
-  { name: "Trung tâm trợ giúp", href: "/help" },
-  { name: "Hướng dẫn sử dụng", href: "/guide" },
-  { name: "Chính sách bảo mật", href: "/privacy" },
-  { name: "Điều khoản dịch vụ", href: "/terms" },
-  { name: "FAQ", href: "/faq" }
+  { name: "Trung tâm trợ giúp", href: "#help", note: "coming-soon" },
+  { name: "Hướng dẫn sử dụng", href: "#guide", note: "coming-soon" },
+  { name: "Chính sách bảo mật", href: "#privacy", note: "coming-soon" },
+  { name: "Điều khoản dịch vụ", href: "#terms", note: "coming-soon" },
+  { name: "FAQ", href: "#faq", note: "coming-soon" }
 ];
 
 const companyInfo = [
-  { name: "Tin tức", href: "/news" },
-  { name: "Sự nghiệp", href: "/careers" },
-  { name: "Đối tác", href: "/partners" },
-  { name: "Báo chí", href: "/press" },
+  { name: "Tin tức", href: "#news", note: "coming-soon" },
+  { name: "Sự nghiệp", href: "#careers", note: "coming-soon" },
+  { name: "Đối tác", href: "#partners", note: "coming-soon" },
+  { name: "Báo chí", href: "#press", note: "coming-soon" },
   { name: "Blog", href: "/blog" }
 ];
 
@@ -80,7 +79,7 @@ export default function Footer() {
               <div className="flex flex-col items-start">
               <img
                 src={logo}
-                alt="CREWNEXT logo"
+                alt="Cviro logo"
                 className="h-16 object-contain mb-4"
               />
               <p className="text-lg text-white/90 max-w-md">
@@ -143,6 +142,11 @@ export default function Footer() {
                         Hot
                       </span>
                     )}
+                    {link.note === "coming-soon" && (
+                      <span className="bg-white/10 text-white/80 text-xs px-2 py-1 rounded-full border border-white/20">
+                        Sắp ra mắt
+                      </span>
+                    )}
                     <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
                   </a>
                 </li>
@@ -164,6 +168,11 @@ export default function Footer() {
                     className="text-white/80 hover:text-[#f0b33a] transition-colors duration-300 group flex items-center gap-2"
                   >
                     <span>{link.name}</span>
+                    {link.note === "coming-soon" && (
+                      <span className="bg-white/10 text-white/80 text-xs px-2 py-1 rounded-full border border-white/20">
+                        Sắp ra mắt
+                      </span>
+                    )}
                     <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
                   </a>
                 </li>
@@ -185,6 +194,11 @@ export default function Footer() {
                     className="text-white/80 hover:text-[#f0b33a] transition-colors duration-300 group flex items-center gap-2"
                   >
                     <span>{link.name}</span>
+                    {link.note === "coming-soon" && (
+                      <span className="bg-white/10 text-white/80 text-xs px-2 py-1 rounded-full border border-white/20">
+                        Sắp ra mắt
+                      </span>
+                    )}
                     <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
                   </a>
                 </li>
@@ -203,7 +217,7 @@ export default function Footer() {
                 <Mail className="w-5 h-5 text-[#ab3f20] mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-white/90 font-medium">Email</p>
-                  <a href="mailto:support@crewnext.com" className="text-white/70 hover:text-[#f0b33a] transition-colors duration-300">
+                  <a href="mailto:support@cviro.com" className="text-white/70 hover:text-[#f0b33a] transition-colors duration-300">
                     support@cviro.com
                   </a>
                 </div>
