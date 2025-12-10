@@ -12,6 +12,8 @@ import {
   XCircle,
   Briefcase,
   Search,
+  Shield,
+  AlertTriangle,
 } from "lucide-react";
 
 async function getOverviewData(email: string) {
@@ -212,6 +214,64 @@ export default async function DashboardOverviewPage() {
           </div>
         ) : null;
       })()}
+
+      {/* Report Fraud Section */}
+      <div className="bg-linear-to-br from-red-50 to-orange-50 rounded-lg border-2 border-red-200 p-4 sm:p-6">
+        <div className="flex items-start gap-3 sm:gap-4">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
+            <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
+          </div>
+          <div className="flex-1">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-bold text-base sm:text-lg text-red-900">
+                  Phát hiện tin tuyển dụng lừa đảo?
+                </h3>
+                <p className="text-red-800 mt-2 text-sm sm:text-base leading-relaxed">
+                  Nếu bạn nhận thấy bất kỳ <strong>dấu hiệu đáng ngờ</strong>{" "}
+                  nào từ nhà tuyển dụng (yêu cầu chuyển tiền, thông tin cá nhân
+                  nhạy cảm, lương cao bất thường...), vui lòng{" "}
+                  <strong className="text-red-900">
+                    báo ngay cho đội ngũ hỗ trợ
+                  </strong>{" "}
+                  của chúng tôi.
+                </p>
+                <div className="mt-4 flex flex-col sm:flex-row gap-3">
+                  <a
+                    href="https://zalo.me/0374918396"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-all shadow-md hover:shadow-lg text-sm sm:text-base"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M12 0C5.373 0 0 4.975 0 11.111c0 3.497 1.745 6.616 4.472 8.652.096 4.432-.684 4.638-2.472 8.237 2.92-.011 5.63-1.19 7.678-3.052.768.17 1.572.263 2.322.263 6.627 0 12-4.974 12-11.111C24 4.975 18.627 0 12 0zm.219 14.863h-3.43v-1.03h1.188v-3.6h-1.188v-.975c.456 0 .913-.036 1.369-.036.456 0 .913.036 1.369.036v4.575h.692v1.03zm3.274 0h-1.095l-1.782-3.015v3.015h-1.095v-5.64h1.095l1.782 3.015v-3.015h1.095v5.64z" />
+                    </svg>
+                    Báo cáo qua Zalo
+                  </a>
+                  <a
+                    href="tel:0374918396"
+                    className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-red-600 border-2 border-red-600 rounded-lg font-semibold hover:bg-red-50 transition-all text-sm sm:text-base"
+                  >
+                    📞 Gọi: 0374918396
+                  </a>
+                </div>
+                <p className="text-xs sm:text-sm text-red-700 mt-3 flex items-start gap-1.5">
+                  <span className="text-base">🛡️</span>
+                  <span>
+                    <strong>Cam kết bảo vệ:</strong> Mọi thông tin báo cáo sẽ
+                    được bảo mật tuyệt đối. Chúng tôi sẽ xử lý trong vòng 24h.
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
