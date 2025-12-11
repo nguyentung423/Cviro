@@ -3,27 +3,10 @@
 import { signOut } from "next-auth/react";
 import { LogOut } from "lucide-react";
 
-interface LogoutButtonProps {
-  variant?: "sidebar" | "icon";
-}
-
-export default function LogoutButton({
-  variant = "sidebar",
-}: LogoutButtonProps) {
+export default function AgencyLogoutButton() {
   const handleLogout = () => {
     signOut({ callbackUrl: "/" });
   };
-
-  if (variant === "icon") {
-    return (
-      <button
-        onClick={handleLogout}
-        className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1"
-      >
-        <LogOut className="w-4 h-4" />
-      </button>
-    );
-  }
 
   return (
     <button

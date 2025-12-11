@@ -121,12 +121,35 @@ export default function CandidateProfilePage() {
   const handleUpload = (result: any, field: keyof ProfileData) => {
     if (result?.event === "upload_added") {
       setUploading(true);
+
+      // Auto-reset after 30 seconds if stuck
+      setTimeout(() => {
+        setUploading(false);
+      }, 30000);
     }
+
     if (result?.event === "success" && result?.info?.secure_url) {
       setFormData((prev) => ({
         ...prev,
         [field]: result.info.secure_url,
       }));
+      setUploading(false);
+    }
+
+    // Handle errors
+    if (result?.event === "error") {
+      console.error("Upload error:", result?.info);
+      setUploading(false);
+      alert("Upload thất bại. Vui lòng thử lại!");
+    }
+
+    // Handle abort/cancel
+    if (result?.event === "abort") {
+      setUploading(false);
+    }
+
+    // Handle queue end (all uploads finished)
+    if (result?.event === "queues-end") {
       setUploading(false);
     }
   };
@@ -150,13 +173,24 @@ export default function CandidateProfilePage() {
     <div className="min-h-screen bg-gray-50">
       {/* Upload Toast */}
       {uploading && (
-        <div className="fixed top-4 right-4 z-50 bg-white rounded-lg shadow-lg border border-gray-200 p-4 flex items-center gap-3 animate-in slide-in-from-top">
-          <div className="w-10 h-10 border-4 border-[#ab3f20] border-t-transparent rounded-full animate-spin"></div>
-          <div>
-            <p className="text-sm font-medium text-gray-900">Đợi xíu nhé! 📸</p>
-            <p className="text-xs text-gray-500">
-              Đang chọn ảnh đẹp nhất cho bạn...
-            </p>
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-white rounded-lg shadow-lg border border-gray-200 p-4 min-w-[280px] animate-in slide-in-from-top">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 border-4 border-[#ab3f20] border-t-transparent rounded-full animate-spin flex-shrink-0"></div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-gray-900">
+                Đang tải ảnh lên... 📸
+              </p>
+              <p className="text-xs text-gray-500">
+                Vui lòng đợi trong giây lát
+              </p>
+            </div>
+            <button
+              onClick={() => setUploading(false)}
+              className="text-gray-400 hover:text-gray-600 transition-colors p-1"
+              title="Đóng"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
         </div>
       )}

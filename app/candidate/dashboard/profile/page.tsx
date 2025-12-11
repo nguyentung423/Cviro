@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { CldUploadWidget } from "next-cloudinary";
-import { Camera, Save, Loader2, User, ArrowLeft } from "lucide-react";
+import { Camera, Save, Loader2, User, ArrowLeft, X } from "lucide-react";
 
 interface CandidateProfile {
   id: string;
@@ -27,6 +27,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [profile, setProfile] = useState<CandidateProfile | null>(null);
 
   useEffect(() => {
@@ -87,6 +88,7 @@ export default function ProfilePage() {
   };
 
   const handleAvatarUpload = async (url: string) => {
+    setUploading(true);
     try {
       const res = await fetch("/api/candidate/profile", {
         method: "PUT",
@@ -106,10 +108,14 @@ export default function ProfilePage() {
       }
     } catch (error) {
       console.error("Failed to upload avatar:", error);
+      alert("Ảnh đại diện upload thất bại!");
+    } finally {
+      setUploading(false);
     }
   };
 
   const handlePhotoUpload = async (slot: number, url: string) => {
+    setUploading(true);
     try {
       const res = await fetch("/api/candidate/profile", {
         method: "PUT",
@@ -124,6 +130,9 @@ export default function ProfilePage() {
       }
     } catch (error) {
       console.error("Failed to upload photo:", error);
+      alert("Ảnh hồ sơ upload thất bại!");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -145,6 +154,30 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-32">
+      {/* Upload Toast */}
+      {uploading && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-white rounded-lg shadow-lg border border-gray-200 p-4 min-w-[280px] animate-in slide-in-from-top">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 border-4 border-[#ab3f20] border-t-transparent rounded-full animate-spin shrink-0"></div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-gray-900">
+                Đang tải ảnh lên... 📸
+              </p>
+              <p className="text-xs text-gray-500">
+                Vui lòng đợi trong giây lát
+              </p>
+            </div>
+            <button
+              onClick={() => setUploading(false)}
+              className="text-gray-400 hover:text-gray-600 transition-colors p-1"
+              title="Đóng"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="bg-white/80 backdrop-blur-xl sticky top-0 z-10 border-b border-gray-100">
         <div className="max-w-2xl mx-auto px-4 py-4">
@@ -174,10 +207,15 @@ export default function ProfilePage() {
               )}
               <CldUploadWidget
                 uploadPreset="cviro_preset"
-                onSuccess={(result: any) => {
+                onQueuesEnd={(result: any) => {
                   if (result?.info?.secure_url) {
                     handleAvatarUpload(result.info.secure_url);
                   }
+                }}
+                onError={(error: any) => {
+                  console.error("Upload error:", error);
+                  setUploading(false);
+                  alert("Upload thất bại. Vui lòng thử lại!");
                 }}
               >
                 {({ open }) => (
@@ -338,10 +376,15 @@ export default function ProfilePage() {
                 )}
                 <CldUploadWidget
                   uploadPreset="cviro_preset"
-                  onSuccess={(result: any) => {
+                  onQueuesEnd={(result: any) => {
                     if (result?.info?.secure_url) {
                       handlePhotoUpload(slot, result.info.secure_url);
                     }
+                  }}
+                  onError={(error: any) => {
+                    console.error("Upload error:", error);
+                    setUploading(false);
+                    alert("Upload thất bại. Vui lòng thử lại!");
                   }}
                 >
                   {({ open }) => (

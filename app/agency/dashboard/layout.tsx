@@ -1,9 +1,11 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Briefcase, Users, User } from "lucide-react";
+import { LayoutDashboard, Briefcase, Users, User, LogOut } from "lucide-react";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import AgencyHeader from "./AgencyHeader";
+import AgencyLogoutButton from "./AgencyLogoutButton";
+import AgencyMobileSidebar from "./AgencyMobileSidebar";
 
 async function getAgencyData(email: string) {
   const { data: agency } = await supabaseAdmin
@@ -43,6 +45,9 @@ export default async function AgencyDashboardLayout({
     <div className="min-h-screen bg-white">
       <AgencyHeader agencyName={agencyName} />
 
+      {/* Mobile Sidebar */}
+      <AgencyMobileSidebar />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
         <div className="flex gap-6 lg:gap-10">
           {/* Sidebar - Desktop only */}
@@ -78,6 +83,11 @@ export default async function AgencyDashboardLayout({
                   Thông tin cá nhân
                 </Link>
               </nav>
+
+              {/* Logout Button */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <AgencyLogoutButton />
+              </div>
             </div>
           </aside>
 

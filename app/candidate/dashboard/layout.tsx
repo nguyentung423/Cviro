@@ -1,10 +1,17 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, User, Briefcase, FileText } from "lucide-react";
+import {
+  LayoutDashboard,
+  User,
+  Briefcase,
+  FileText,
+  LogOut,
+} from "lucide-react";
 import { CandidateService } from "@/lib/services/candidateService";
 import MobileSidebar from "./MobileSidebar";
 import DashboardHeader from "./DashboardHeader";
+import LogoutButton from "./LogoutButton";
 
 async function getCandidateData(email: string) {
   const candidate = await CandidateService.getProfile(email);
@@ -108,6 +115,11 @@ export default async function CandidateDashboardLayout({
                     </span>
                   </div>
                 </div>
+              </div>
+
+              {/* Logout Button */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <LogoutButton variant="sidebar" />
               </div>
             </div>
           </aside>
