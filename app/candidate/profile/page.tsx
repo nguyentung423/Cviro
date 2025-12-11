@@ -2,9 +2,9 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, ChangeEvent } from "react";
 import { ArrowLeft, Upload, X, Loader2 } from "lucide-react";
-import { CldUploadWidget } from "next-cloudinary";
+import { uploadToCloudinary, validateImageFile } from "@/lib/uploadImage";
 
 interface ProfileData {
   name: string;
@@ -118,40 +118,46 @@ export default function CandidateProfilePage() {
     }
   };
 
-  const handleUpload = (result: any, field: keyof ProfileData) => {
-    if (result?.event === "upload_added") {
-      setUploading(true);
+  const handleUpload = async (
+    e: ChangeEvent<HTMLInputElement>,
+    field: keyof ProfileData
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-      // Auto-reset after 30 seconds if stuck
-      setTimeout(() => {
-        setUploading(false);
-      }, 30000);
+    // Reset input
+    e.target.value = "";
+
+    // Validate
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      alert(validation.error);
+      return;
     }
 
-    if (result?.event === "success" && result?.info?.secure_url) {
+    setUploading(true);
+
+    try {
+      const url = await uploadToCloudinary(file);
       setFormData((prev) => ({
         ...prev,
-        [field]: result.info.secure_url,
+        [field]: url,
       }));
-      setUploading(false);
-    }
-
-    // Handle errors
-    if (result?.event === "error") {
-      console.error("Upload error:", result?.info);
-      setUploading(false);
+    } catch (error) {
+      console.error("Upload error:", error);
       alert("Upload thất bại. Vui lòng thử lại!");
-    }
-
-    // Handle abort/cancel
-    if (result?.event === "abort") {
+    } finally {
       setUploading(false);
     }
+  };
 
-    // Handle queue end (all uploads finished)
-    if (result?.event === "queues-end") {
-      setUploading(false);
-    }
+  // Refs for file inputs
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const photoInputRefs = {
+    photo_1: useRef<HTMLInputElement>(null),
+    photo_2: useRef<HTMLInputElement>(null),
+    photo_3: useRef<HTMLInputElement>(null),
+    photo_4: useRef<HTMLInputElement>(null),
   };
 
   const removePhoto = (field: keyof ProfileData) => {
@@ -243,20 +249,22 @@ export default function CandidateProfilePage() {
                   <Upload className="w-8 h-8 text-gray-400" />
                 </div>
               )}
-              <CldUploadWidget
-                uploadPreset="cviro_preset"
-                onSuccess={(result) => handleUpload(result, "avatar_url")}
-              >
-                {({ open }) => (
-                  <button
-                    type="button"
-                    onClick={() => open()}
-                    className="px-4 py-2 bg-[#ab3f20] text-white rounded-lg hover:bg-[#8b2f15] transition-colors"
-                  >
-                    Tải ảnh lên
-                  </button>
-                )}
-              </CldUploadWidget>
+              <div>
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={(e) => handleUpload(e, "avatar_url")}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => avatarInputRef.current?.click()}
+                  className="px-4 py-2 bg-[#ab3f20] text-white rounded-lg hover:bg-[#8b2f15] transition-colors"
+                >
+                  Tải ảnh lên
+                </button>
+              </div>
             </div>
           </div>
 
@@ -369,7 +377,7 @@ export default function CandidateProfilePage() {
                 (field, idx) => (
                   <div key={field}>
                     {formData[field] ? (
-                      <div className="relative aspect-[3/4] rounded-lg overflow-hidden border-2 border-gray-200">
+                      <div className="relative aspect-3/4 rounded-lg overflow-hidden border-2 border-gray-200">
                         <img
                           src={formData[field]}
                           alt={`Photo ${idx + 1}`}
@@ -384,23 +392,25 @@ export default function CandidateProfilePage() {
                         </button>
                       </div>
                     ) : (
-                      <CldUploadWidget
-                        uploadPreset="cviro_preset"
-                        onSuccess={(result) => handleUpload(result, field)}
-                      >
-                        {({ open }) => (
-                          <button
-                            type="button"
-                            onClick={() => open()}
-                            className="w-full aspect-[3/4] border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-2 hover:border-[#ab3f20] hover:bg-gray-50 transition-colors"
-                          >
-                            <Upload className="w-8 h-8 text-gray-400" />
-                            <span className="text-sm text-gray-500">
-                              Ảnh {idx + 1}
-                            </span>
-                          </button>
-                        )}
-                      </CldUploadWidget>
+                      <div>
+                        <input
+                          ref={photoInputRefs[field]}
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          onChange={(e) => handleUpload(e, field)}
+                          className="hidden"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => photoInputRefs[field].current?.click()}
+                          className="w-full aspect-3/4 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-2 hover:border-[#ab3f20] hover:bg-gray-50 transition-colors"
+                        >
+                          <Upload className="w-8 h-8 text-gray-400" />
+                          <span className="text-sm text-gray-500">
+                            Ảnh {idx + 1}
+                          </span>
+                        </button>
+                      </div>
                     )}
                   </div>
                 )

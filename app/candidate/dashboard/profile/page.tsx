@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { CldUploadWidget } from "next-cloudinary";
+import { uploadToCloudinary, validateImageFile } from "@/lib/uploadImage";
 import { Camera, Save, Loader2, User, ArrowLeft, X } from "lucide-react";
 
 interface CandidateProfile {
@@ -88,7 +88,6 @@ export default function ProfilePage() {
   };
 
   const handleAvatarUpload = async (url: string) => {
-    setUploading(true);
     try {
       const res = await fetch("/api/candidate/profile", {
         method: "PUT",
@@ -109,13 +108,10 @@ export default function ProfilePage() {
     } catch (error) {
       console.error("Failed to upload avatar:", error);
       alert("Ảnh đại diện upload thất bại!");
-    } finally {
-      setUploading(false);
     }
   };
 
   const handlePhotoUpload = async (slot: number, url: string) => {
-    setUploading(true);
     try {
       const res = await fetch("/api/candidate/profile", {
         method: "PUT",
@@ -131,10 +127,48 @@ export default function ProfilePage() {
     } catch (error) {
       console.error("Failed to upload photo:", error);
       alert("Ảnh hồ sơ upload thất bại!");
+    }
+  };
+
+  // Handle native file upload
+  const handleFileUpload = async (
+    e: ChangeEvent<HTMLInputElement>,
+    type: "avatar" | number
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = "";
+
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      alert(validation.error);
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const url = await uploadToCloudinary(file);
+      if (type === "avatar") {
+        await handleAvatarUpload(url);
+      } else {
+        await handlePhotoUpload(type, url);
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Upload thất bại. Vui lòng thử lại!");
     } finally {
       setUploading(false);
     }
   };
+
+  // Refs for file inputs
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const photoInputRefs = [
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+  ];
 
   if (loading) {
     return (
@@ -205,28 +239,19 @@ export default function ProfilePage() {
                   <User className="w-10 h-10 text-gray-400" />
                 </div>
               )}
-              <CldUploadWidget
-                uploadPreset="cviro_preset"
-                onQueuesEnd={(result: any) => {
-                  if (result?.info?.secure_url) {
-                    handleAvatarUpload(result.info.secure_url);
-                  }
-                }}
-                onError={(error: any) => {
-                  console.error("Upload error:", error);
-                  setUploading(false);
-                  alert("Upload thất bại. Vui lòng thử lại!");
-                }}
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={(e) => handleFileUpload(e, "avatar")}
+                className="hidden"
+              />
+              <button
+                onClick={() => avatarInputRef.current?.click()}
+                className="absolute bottom-0 right-0 w-7 h-7 bg-[#ab3f20] rounded-full flex items-center justify-center shadow-lg hover:bg-[#8a3219] transition-colors active:scale-95"
               >
-                {({ open }) => (
-                  <button
-                    onClick={() => open()}
-                    className="absolute bottom-0 right-0 w-7 h-7 bg-[#ab3f20] rounded-full flex items-center justify-center shadow-lg hover:bg-[#8a3219] transition-colors active:scale-95"
-                  >
-                    <Camera className="w-4 h-4 text-white" />
-                  </button>
-                )}
-              </CldUploadWidget>
+                <Camera className="w-4 h-4 text-white" />
+              </button>
             </div>
             <div>
               <h2 className="text-lg font-semibold text-gray-900">
@@ -357,7 +382,7 @@ export default function ProfilePage() {
             Album ảnh
           </h3>
           <div className="grid grid-cols-2 gap-3">
-            {[1, 2, 3, 4].map((slot) => (
+            {[1, 2, 3, 4].map((slot, index) => (
               <div key={slot} className="relative aspect-square">
                 {profile[`photo_${slot}` as keyof CandidateProfile] ? (
                   <img
@@ -374,28 +399,19 @@ export default function ProfilePage() {
                     <Camera className="w-7 h-7 text-gray-300" />
                   </div>
                 )}
-                <CldUploadWidget
-                  uploadPreset="cviro_preset"
-                  onQueuesEnd={(result: any) => {
-                    if (result?.info?.secure_url) {
-                      handlePhotoUpload(slot, result.info.secure_url);
-                    }
-                  }}
-                  onError={(error: any) => {
-                    console.error("Upload error:", error);
-                    setUploading(false);
-                    alert("Upload thất bại. Vui lòng thử lại!");
-                  }}
+                <input
+                  ref={photoInputRefs[index]}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={(e) => handleFileUpload(e, slot)}
+                  className="hidden"
+                />
+                <button
+                  onClick={() => photoInputRefs[index].current?.click()}
+                  className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 active:opacity-100 transition-opacity rounded-xl flex items-center justify-center"
                 >
-                  {({ open }) => (
-                    <button
-                      onClick={() => open()}
-                      className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 active:opacity-100 transition-opacity rounded-xl flex items-center justify-center"
-                    >
-                      <Camera className="w-6 h-6 text-white" />
-                    </button>
-                  )}
-                </CldUploadWidget>
+                  <Camera className="w-6 h-6 text-white" />
+                </button>
               </div>
             ))}
           </div>
