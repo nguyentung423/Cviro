@@ -53,10 +53,10 @@ export default function DashboardHeader({
           {/* Logo */}
           <Link href="/candidate/dashboard">
             <Image
-              src="/logo.svg"
+              src="/logo.png"
               alt="Cviro"
-              width={140}
-              height={40}
+              width={480}
+              height={144}
               className="h-10 w-auto"
               priority
             />

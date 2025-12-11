@@ -84,11 +84,11 @@ export default function Header() {
       <div className="flex items-center justify-between sm:px-4 py-4">
         <Link href="/" className="flex items-center gap-2 z-10">
           <Image
-            src="/logo.svg"
+            src="/logo.png"
             alt="Cviro logo"
-            width={120}
-            height={40}
-            className="h-13 w-auto object-contain"
+            width={480}
+            height={144}
+            className="h-10 w-auto object-contain"
             priority
           />
         </Link>

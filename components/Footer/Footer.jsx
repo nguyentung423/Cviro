@@ -78,11 +78,11 @@ export default function Footer() {
             <div className="mb-6 text-left">
               <div className="flex flex-col items-start">
                 <Image
-                  src="/logo.svg"
+                  src="/logo.png"
                   alt="Cviro logo"
-                  width={160}
-                  height={64}
-                  className="h-16 object-contain mb-4"
+                  width={480}
+                  height={144}
+                  className="h-12 w-auto object-contain mb-4"
                 />
                 <p className="text-lg text-white/90 max-w-md">
                   Nền tảng kết nối{" "}
