@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import {
+  checkRateLimit,
+  getClientIP,
+  RATE_LIMITS,
+  rateLimitExceededResponse,
+} from "@/lib/rateLimit";
 
 const resend = new Resend(process.env.RESEND_API_KEY || "");
 const TTL_MS = 5 * 60 * 1000; // 5 minutes
@@ -13,6 +19,40 @@ export async function POST(req: Request) {
     if (!email || typeof email !== "string") {
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const clientIP = await getClientIP();
+
+    // RATE LIMIT 1: Per IP (10 requests per 10 minutes)
+    const ipLimit = await checkRateLimit(clientIP, RATE_LIMITS.OTP_SEND_IP);
+    if (!ipLimit.allowed) {
+      return rateLimitExceededResponse(ipLimit);
+    }
+
+    // RATE LIMIT 2: Per Email (3 requests per 10 minutes)
+    const emailLimit = await checkRateLimit(
+      normalizedEmail,
+      RATE_LIMITS.OTP_SEND_EMAIL
+    );
+    if (!emailLimit.allowed) {
+      return rateLimitExceededResponse(emailLimit);
+    }
+
+    // RATE LIMIT 3: Daily limit per email (10 per day)
+    const dailyLimit = await checkRateLimit(
+      normalizedEmail,
+      RATE_LIMITS.OTP_SEND_DAILY
+    );
+    if (!dailyLimit.allowed) {
+      return NextResponse.json(
+        {
+          error:
+            "Bạn đã đạt giới hạn OTP trong ngày. Vui lòng thử lại sau 24 giờ.",
+        },
+        { status: 429 }
+      );
+    }
+
     if (!process.env.RESEND_API_KEY) {
       return NextResponse.json(
         { error: "RESEND_API_KEY missing" },
@@ -20,7 +60,6 @@ export async function POST(req: Request) {
       );
     }
 
-    const normalizedEmail = email.trim().toLowerCase();
     const now = Date.now();
 
     // Check cooldown

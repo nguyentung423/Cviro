@@ -78,7 +78,7 @@ export default function Footer() {
             <div className="mb-6 text-left">
               <div className="flex flex-col items-start">
                 <Image
-                  src="/logo.png"
+                  src="/logo.svg"
                   alt="Cviro logo"
                   width={160}
                   height={64}

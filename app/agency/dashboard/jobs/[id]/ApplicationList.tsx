@@ -114,12 +114,8 @@ export default function ApplicationList({
                 </h4>
               </Link>
               <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-600">
-                {app.candidate?.age && (
-                  <span>{app.candidate.age} tuổi</span>
-                )}
-                {app.candidate?.phone && (
-                  <span>{app.candidate.phone}</span>
-                )}
+                {app.candidate?.age && <span>{app.candidate.age} tuổi</span>}
+                {app.candidate?.phone && <span>{app.candidate.phone}</span>}
               </div>
               <p className="text-xs text-gray-500 mt-2">
                 Ứng tuyển lúc{" "}

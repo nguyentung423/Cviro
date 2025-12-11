@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import {
+  checkRateLimit,
+  getClientIP,
+  RATE_LIMITS,
+  rateLimitExceededResponse,
+} from "@/lib/rateLimit";
 
 const MAX_ATTEMPTS = 5;
 
@@ -17,6 +23,13 @@ export async function POST(req: Request) {
         { error: "Email và mã là bắt buộc" },
         { status: 400 }
       );
+    }
+
+    // RATE LIMIT: Per IP (10 requests per 5 minutes)
+    const clientIP = await getClientIP();
+    const ipLimit = await checkRateLimit(clientIP, RATE_LIMITS.OTP_VERIFY_IP);
+    if (!ipLimit.allowed) {
+      return rateLimitExceededResponse(ipLimit);
     }
 
     const normalizedEmail = email.trim().toLowerCase();
@@ -60,6 +73,16 @@ export async function POST(req: Request) {
     const isMatch = otp.code === code.trim();
 
     if (isMatch) {
+      // Lưu verification record để save-user có thể verify
+      await supabaseAdmin.from("verified_emails").upsert(
+        {
+          email: normalizedEmail,
+          verified_at: new Date().toISOString(),
+          expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(), // 10 phút
+        },
+        { onConflict: "email" }
+      );
+
       await supabaseAdmin.from("otps").delete().eq("email", normalizedEmail);
       return NextResponse.json({ ok: true });
     }

@@ -84,7 +84,7 @@ export default function Header() {
       <div className="flex items-center justify-between sm:px-4 py-4">
         <Link href="/" className="flex items-center gap-2 z-10">
           <Image
-            src="/logo.png"
+            src="/logo.svg"
             alt="Cviro logo"
             width={120}
             height={40}

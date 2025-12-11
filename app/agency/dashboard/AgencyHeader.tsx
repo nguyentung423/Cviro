@@ -48,7 +48,7 @@ export default function AgencyHeader({ agencyName }: { agencyName: string }) {
           {/* Logo */}
           <Link href="/agency/dashboard">
             <Image
-              src="/logo.png"
+              src="/logo.svg"
               alt="Cviro"
               width={140}
               height={40}
