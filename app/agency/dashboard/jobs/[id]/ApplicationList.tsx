@@ -113,27 +113,20 @@ export default function ApplicationList({
                   {app.candidate?.name || "Ứng viên"}
                 </h4>
               </Link>
-              <div className="mt-1 space-y-0.5">
-                <p className="text-sm text-gray-600">
-                  📧 {app.candidate?.email}
-                </p>
-                {app.candidate?.phone && (
-                  <p className="text-sm text-gray-600">
-                    📱 {app.candidate.phone}
-                  </p>
-                )}
+              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-600">
                 {app.candidate?.age && (
-                  <p className="text-sm text-gray-600">
-                    🎂 {app.candidate.age} tuổi
-                  </p>
+                  <span>{app.candidate.age} tuổi</span>
                 )}
-                <p className="text-xs text-gray-500 mt-2">
-                  Ứng tuyển lúc{" "}
-                  {format(new Date(app.created_at), "HH:mm dd/MM/yyyy", {
-                    locale: vi,
-                  })}
-                </p>
+                {app.candidate?.phone && (
+                  <span>{app.candidate.phone}</span>
+                )}
               </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Ứng tuyển lúc{" "}
+                {format(new Date(app.created_at), "HH:mm dd/MM/yyyy", {
+                  locale: vi,
+                })}
+              </p>
             </div>
 
             <div className="flex flex-col gap-2 shrink-0">

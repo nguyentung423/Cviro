@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { ArrowLeft, Camera, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { uploadToCloudinary, validateImageFile } from "@/lib/uploadImage";
 
 interface AgencyProfile {
   id: string;
@@ -22,19 +23,10 @@ export default function AgencyProfilePage() {
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [profile, setProfile] = useState<AgencyProfile | null>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchProfile();
-
-    // Load Cloudinary widget script
-    const script = document.createElement("script");
-    script.src = "https://upload-widget.cloudinary.com/global/all.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
   }, []);
 
   const fetchProfile = async () => {
@@ -51,54 +43,43 @@ export default function AgencyProfilePage() {
     }
   };
 
-  const handleAvatarUpload = () => {
+  const handleAvatarUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = "";
+
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      alert(validation.error);
+      return;
+    }
+
     setUploadingAvatar(true);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (typeof window !== "undefined" && (window as any).cloudinary) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).cloudinary
-        .createUploadWidget(
-          {
-            cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-            uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
-            sources: ["local", "camera"],
-            multiple: false,
-            cropping: true,
-            croppingAspectRatio: 1,
-            croppingShowDimensions: true,
-            folder: "agency_avatars",
-          },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          async (error: any, result: any) => {
-            if (!error && result && result.event === "success") {
-              const avatarUrl = result.info.secure_url;
+    try {
+      const avatarUrl = await uploadToCloudinary(file);
 
-              // Update profile state
-              if (profile) {
-                setProfile({ ...profile, avatar_url: avatarUrl });
-              }
+      // Update profile state
+      if (profile) {
+        setProfile({ ...profile, avatar_url: avatarUrl });
+      }
 
-              // Save to database
-              await fetch("/api/agency/profile", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ avatar_url: avatarUrl }),
-              });
+      // Save to database
+      await fetch("/api/agency/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ avatar_url: avatarUrl }),
+      });
 
-              // Dispatch custom event for header update
-              window.dispatchEvent(
-                new CustomEvent("avatarUpdated", { detail: { avatarUrl } })
-              );
-            }
-            setUploadingAvatar(false);
-          }
-        )
-        .open();
-    } else {
-      // Cloudinary not loaded yet
+      // Dispatch custom event for header update
+      window.dispatchEvent(
+        new CustomEvent("avatarUpdated", { detail: { avatarUrl } })
+      );
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Upload thất bại. Vui lòng thử lại!");
+    } finally {
       setUploadingAvatar(false);
-      alert("Đang tải widget, vui lòng thử lại sau giây lát");
     }
   };
 
@@ -178,8 +159,15 @@ export default function AgencyProfilePage() {
                 <span>{profile.agency_name?.[0]?.toUpperCase() || "A"}</span>
               )}
             </div>
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleAvatarUpload}
+              className="hidden"
+            />
             <button
-              onClick={handleAvatarUpload}
+              onClick={() => avatarInputRef.current?.click()}
               disabled={uploadingAvatar}
               className="absolute bottom-0 right-0 w-8 h-8 bg-[#536b4e] text-white rounded-full flex items-center justify-center hover:bg-[#435940] transition-colors shadow-lg disabled:opacity-50"
             >
